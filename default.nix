@@ -102,6 +102,7 @@ let
        --with-curlwrappers
        --with-zlib=${zlib.dev}
        --with-libxml-dir=${libxml2.dev}
+       --with-xmlrpc
        --with-readline=${readline.dev}
        --with-pdo-sqlite=${sqlite.dev}
        --with-pgsql=${postgresql}
@@ -216,6 +217,23 @@ let
       '';
   };
 
+  php72Packages.rrd = stdenv.mkDerivation rec {
+      name = "rrd-2.0.1";
+      src = fetchurl {
+          url = "http://pecl.php.net/get/${name}.tgz";
+          sha256 = "39f5ae515de003d8dad6bfd77db60f5bd5b4a9f6caa41479b1b24b0d6592715d";
+      };
+      nativeBuildInputs = [ autoreconfHook pkgconfig ] ;
+      buildInputs = [ php72 rrdtool ];
+      makeFlags = [ "EXTENSION_DIR=$(out)/lib/php/extensions" ];
+      autoreconfPhase = "phpize";
+      postInstall = ''
+          mkdir -p  $out/etc/php.d
+          echo "extension = $out/lib/php/extensions/rrd.so" >> $out/etc/php.d/rrd.ini
+      '';
+  };
+
+
   php72Packages.memcached = stdenv.mkDerivation rec {
       name = "memcached-3.1.3";
       src = fetchurl {
@@ -258,7 +276,7 @@ in
 pkgs.dockerTools.buildLayeredImage rec {
     name = "docker-registry.intr/webservices/php72";
     tag = "master";
-    contents = [ php72 perl php72Packages.redis php72Packages.timezonedb php72Packages.memcached php72Packages.imagick phpioncubepack bash coreutils findutils apacheHttpd ];
+    contents = [ php72 perl php72Packages.rrd php72Packages.redis php72Packages.timezonedb php72Packages.memcached php72Packages.imagick phpioncubepack bash coreutils findutils apacheHttpd ];
     config = {
        Entrypoint = [ "/bin/php" ];
        Env = [ "TZ=Europe/Moscow" "TZDIR=/share/zoneinfo" ];
