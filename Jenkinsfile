@@ -11,7 +11,7 @@ pipeline {
             buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
         }
         stages {
-            stage('Build php73') {
+            stage('Build php72') {
                 steps {
                     gitlabCommitStatus(STAGE_NAME) {
                          sh ' . /var/jenkins_home/.nix-profile/etc/profile.d/nix.sh && docker load --input $(nix-build --cores 8 default.nix --show-trace | grep tar ) '
