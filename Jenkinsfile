@@ -27,7 +27,7 @@ pipeline {
                 }
             }
             stage('Push latest Docker image') {
-                when not { branch 'master' }
+                when { not { branch 'master' }}
                 steps {
                     gitlabCommitStatus(STAGE_NAME) {
                           sh 'docker push docker-registry.intr/webservices/php72:latest'
