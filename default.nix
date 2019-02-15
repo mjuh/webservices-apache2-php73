@@ -4,6 +4,56 @@ with lib;
 
 let
 
+  apacheHttpd = stdenv.mkDerivation rec {
+      version = "2.4.35";
+      name = "apache-httpd-${version}";
+      src = fetchurl {
+          url = "mirror://apache/httpd/httpd-${version}.tar.bz2";
+          sha256 = "0mlvwsm7hmpc7db6lfc2nx3v4cll3qljjxhjhgsw6aniskywc1r6";
+      };
+      outputs = [ "out" "dev" "man" "doc" ];
+      setOutputFlags = false; # it would move $out/modules, etc.
+      buildInputs = [ perl zlib nss_ldap nss_pam_ldapd openldap];
+      prePatch = ''
+          sed -i config.layout -e "s|installbuilddir:.*|installbuilddir: $dev/share/build|"
+      '';
+
+      preConfigure = ''
+          configureFlags="$configureFlags --includedir=$dev/include"
+      '';
+
+      configureFlags = [
+          "--with-apr=${apr.dev}"
+          "--with-apr-util=${aprutil.dev}"
+          "--with-z=${zlib.dev}"
+          "--with-pcre=${pcre.dev}"
+          "--disable-maintainer-mode"
+          "--disable-debugger-mode"
+          "--enable-mods-shared=all"
+          "--enable-mpms-shared=all"
+          "--enable-cern-meta"
+          "--enable-imagemap"
+          "--enable-cgi"
+          "--disable-ldap"
+          "--with-mpm=prefork"
+      ];
+#"--docdir=$(doc)/share/doc"
+#"--enable-mods-shared=all"
+
+      enableParallelBuilding = true;
+      stripDebugList = "lib modules bin";
+      postInstall = ''
+          mkdir -p $doc/share/doc/httpd
+          mv $out/manual $doc/share/doc/httpd
+          mkdir -p $dev/bin
+          mv $out/bin/apxs $dev/bin/apxs
+      '';
+
+      passthru = {
+          inherit apr aprutil ;
+      };
+  };
+
   phpioncubepack = stdenv.mkDerivation rec {
       name = "phpioncubepack";
       src =  fetchurl {
@@ -123,6 +173,7 @@ let
        --with-sodium=${libsodium.dev}
        --with-tidy=${html-tidy}
        --with-password-argon2=${libargon2}
+       --with-apxs2=${apacheHttpd.dev}/bin/apxs
        '';
 #       --with-apxs2=${apacheHttpd.dev}/bin/apxs
 
@@ -271,13 +322,39 @@ let
       '';
   };
 
+  apacheHttpdmpmITK = stdenv.mkDerivation rec {
+      name = "apacheHttpdmpmITK";
+      buildInputs =[ apacheHttpd ];
+      src = fetchurl {
+          url = "http://mpm-itk.sesse.net/mpm-itk-2.4.7-04.tar.gz";
+          sha256 = "609f83e8995416c5491348e07139f26046a579db20cf8488ebf75d314668efcf";
+      };
+      configureFlags = [ "--with-apxs2=${apacheHttpd}/bin/apxs" ];
+#      postInstall = ''
+#      '';
+
+  };
+
 in 
 
 pkgs.dockerTools.buildLayeredImage rec {
     name = "docker-registry.intr/webservices/php72";
     tag = "master";
-    contents = [ php72 perl php72Packages.rrd php72Packages.redis php72Packages.timezonedb php72Packages.memcached php72Packages.imagick phpioncubepack bash coreutils findutils apacheHttpd ];
-    config = {
+    contents = [ php72 
+                 perl
+                 php72Packages.rrd
+                 php72Packages.redis
+                 php72Packages.timezonedb
+                 php72Packages.memcached
+                 php72Packages.imagick
+                 phpioncubepack
+                 bash
+                 coreutils
+                 findutils
+                 apacheHttpd
+    ];
+#apacheHttpdmpmITK 
+   config = {
        Entrypoint = [ "/bin/php" ];
        Env = [ "TZ=Europe/Moscow" "TZDIR=/share/zoneinfo" ];
     };
