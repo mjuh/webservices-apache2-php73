@@ -243,9 +243,10 @@ let
           url = "http://pecl.php.net/get/${name}.tgz";
           sha256 = "1f3c5b5eeaa02800ad22f506cd100e8889a66b2ec937e192eaaa30d74562567c";
       };
-      nativeBuildInputs = [ autoreconfHook ] ;
-      buildInputs = [ php72 pkg-config imagemagick pkgconfig ];
+      nativeBuildInputs = [ autoreconfHook pkgconfig ] ;
+      buildInputs = [ php72 imagemagick pcre ];
       makeFlags = [ "EXTENSION_DIR=$(out)/lib/php/extensions" ];
+      configureFlags = [ "--with-imagick=${pkgs.imagemagick.dev}" ];
       autoreconfPhase = "phpize";
       postInstall = ''
           mkdir -p  $out/etc/php.d
@@ -258,7 +259,7 @@ in
 pkgs.dockerTools.buildLayeredImage rec {
     name = "docker-registry.intr/webservices/php72";
     tag = "master";
-    contents = [ php72 perl php72Packages.redis php72Packages.timezonedb php72Packages.memcached phpioncubepack bash coreutils findutils apacheHttpd ];
+    contents = [ php72 perl php72Packages.redis php72Packages.timezonedb php72Packages.memcached php72Packages.imagick phpioncubepack bash coreutils findutils apacheHttpd ];
     config = {
        Entrypoint = [ "/bin/php" ];
        Env = [ "TZ=Europe/Moscow" "TZDIR=/share/zoneinfo" ];
