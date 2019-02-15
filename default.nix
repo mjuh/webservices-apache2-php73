@@ -12,8 +12,7 @@ let
       };
       installPhase = ''
                   mkdir -p  $out/
-                  tar -zxvf ${src} -C $out/
-                  ls $out/
+                  tar zxvf  ${src} -C $out/ ioncube/ioncube_loader_lin_7.2.so
       '';
   };
 
