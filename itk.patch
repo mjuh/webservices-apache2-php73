@@ -15,8 +15,8 @@ diff -c mpm-itk-2.4.7-04/Makefile.in mpm-itk-2.4.7-04p/Makefile.in
   	$(APXS) -c $(SRCS) $(LIBS)
   
   install: mpm_itk.la
-! 	mkdir -p /httpdmodules
-! 	$(APXS) -S LIBEXECDIR=/httpdmodules -i $<
+! 	mkdir -p /tmp/out
+! 	$(APXS) -S LIBEXECDIR=/tmp/out -i $<
   
   clean:
   	$(RM) -r .libs

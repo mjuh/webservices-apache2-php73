@@ -333,7 +333,7 @@ let
       patches = [ ./itk.patch ];
       postInstall = ''
           mkdir -p $out/modules
-          cp -pr /httpdmodules/mpm_itk.so $out/modules
+          cp -pr /tmp/out/mpm_itk.so $out/modules
       '';
       outputs = [ "out" ];
       enableParallelBuilding = true;
@@ -352,12 +352,12 @@ let
           sha256 = "1d3iqx5mf0x3g55hjd4pfpyc5c82gjiivk7gv6zyvkyd9v9za8xz";
       };
       installPhase = ''
-                 mkdir -p /tmp
-                 cp -pr $src/* /tmp
-                 mkdir -p /httpdmodules
+                 mkdir -p /tmp/src
+                 mkdir -p /tmp/out
+                 cp -pr $src/* /tmp/src
                  mkdir -p  $out/modules
-                 ${apacheHttpd.dev}/bin/apxs -S LIBEXECDIR=/httpdmodules -c -i /tmp/mod_proctitle.c
-                 cp -pr /httpdmodules/* $out/modules
+                 ${apacheHttpd.dev}/bin/apxs -S LIBEXECDIR=/tmp/out -c -i /tmp/src/mod_proctitle.c
+                 cp -pr /tmp/out/* $out/modules
       '';
       outputs = [ "out" ];
       enableParallelBuilding = true;
