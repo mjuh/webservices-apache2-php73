@@ -358,6 +358,8 @@ let
                  mkdir -p  $out/modules
                  ${apacheHttpd.dev}/bin/apxs -S LIBEXECDIR=/tmp/out -c -i /tmp/src/mod_proctitle.c
                  cp -pr /tmp/out/* $out/modules
+                 cp -pr /tmp/out/* $out/modules
+                 rm -rf /tmp/src /tmp/out
       '';
       outputs = [ "out" ];
       enableParallelBuilding = true;
