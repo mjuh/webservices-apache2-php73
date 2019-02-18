@@ -175,7 +175,6 @@ let
        --with-password-argon2=${libargon2}
        --with-apxs2=${apacheHttpd.dev}/bin/apxs
        '';
-#       --with-apxs2=${apacheHttpd.dev}/bin/apxs
 
       hardeningDisable = [ "bindnow" ];
 
@@ -322,6 +321,7 @@ let
       '';
   };
 
+#http://mpm-itk.sesse.net/
   apacheHttpdmpmITK = stdenv.mkDerivation rec {
       name = "apacheHttpdmpmITK";
       buildInputs =[ apacheHttpd ];
@@ -330,10 +330,39 @@ let
           sha256 = "609f83e8995416c5491348e07139f26046a579db20cf8488ebf75d314668efcf";
       };
       configureFlags = [ "--with-apxs2=${apacheHttpd}/bin/apxs" ];
-#      postInstall = ''
-#      '';
-
+      patches = [ ./itk.patch ];
+      postInstall = ''
+          mkdir -p $out/modules
+          cp -pr /httpdmodules/mpm_itk.so $out/modules
+      '';
+      outputs = [ "out" ];
+      enableParallelBuilding = true;
+      stripDebugList = "lib modules bin";
   };
+
+
+#https://github.com/diphost/mod_proctitle
+  apacheHttpdproctitle = stdenv.mkDerivation rec {
+      name = "apacheHttpdproctitle";
+      buildInputs =[ apacheHttpd ];
+      src = fetchFromGitHub {
+          owner = "diphost";
+          repo = "mod_proctitle";
+          rev = "master";
+          sha256 = "1d3iqx5mf0x3g55hjd4pfpyc5c82gjiivk7gv6zyvkyd9v9za8xz";
+      };
+      installPhase = ''
+                 mkdir -p /tmp
+                 cp -pr $src/* /tmp
+                 mkdir -p /httpdmodules
+                 mkdir -p  $out/modules
+                 ${apacheHttpd.dev}/bin/apxs -S LIBEXECDIR=/httpdmodules -c -i /tmp/mod_proctitle.c
+                 cp -pr /httpdmodules/* $out/modules
+      '';
+      outputs = [ "out" ];
+      enableParallelBuilding = true;
+      stripDebugList = "lib modules bin";
+};
 
 in 
 
@@ -352,6 +381,8 @@ pkgs.dockerTools.buildLayeredImage rec {
                  coreutils
                  findutils
                  apacheHttpd
+                 apacheHttpdmpmITK
+                 apacheHttpdproctitle
     ];
 #apacheHttpdmpmITK 
    config = {
