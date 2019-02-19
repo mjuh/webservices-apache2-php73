@@ -342,28 +342,56 @@ let
 
 
 #https://github.com/diphost/mod_proctitle
-  apacheHttpdproctitle = stdenv.mkDerivation rec {
-      name = "apacheHttpdproctitle";
-      buildInputs =[ apacheHttpd ];
-      src = fetchFromGitHub {
-          owner = "diphost";
-          repo = "mod_proctitle";
-          rev = "master";
-          sha256 = "1d3iqx5mf0x3g55hjd4pfpyc5c82gjiivk7gv6zyvkyd9v9za8xz";
-      };
-      installPhase = ''
-                 mkdir -p /tmp/src
-                 mkdir -p /tmp/out
-                 cp -pr $src/* /tmp/src
-                 mkdir -p  $out/modules
-                 ${apacheHttpd.dev}/bin/apxs -S LIBEXECDIR=/tmp/out -c -i /tmp/src/mod_proctitle.c
-                 cp -pr /tmp/out/* $out/modules
-                 cp -pr /tmp/out/* $out/modules
-                 rm -rf /tmp/src /tmp/out
-      '';
-      outputs = [ "out" ];
-      enableParallelBuilding = true;
-      stripDebugList = "lib modules bin";
+#  apacheHttpdproctitle = stdenv.mkDerivation rec {
+#      name = "apacheHttpdproctitle";
+#      buildInputs =[ apacheHttpd ];
+#      src = fetchFromGitHub {
+#          owner = "diphost";
+#          repo = "mod_proctitle";
+#          rev = "master";
+#          sha256 = "1d3iqx5mf0x3g55hjd4pfpyc5c82gjiivk7gv6zyvkyd9v9za8xz";
+#      };
+#      installPhase = ''
+#                 mkdir -p /tmp/src
+#                 mkdir -p /tmp/out
+#                 cp -pr $src/* /tmp/src
+#                 mkdir -p  $out/modules
+#                 ${apacheHttpd.dev}/bin/apxs -S LIBEXECDIR=/tmp/out -c -i /tmp/src/mod_proctitle.c
+#                 cp -pr /tmp/out/* $out/modules
+#                 cp -pr /tmp/out/* $out/modules
+#                 rm -rf /tmp/src /tmp/out
+#      '';
+#      outputs = [ "out" ];
+#      enableParallelBuilding = true;
+#      stripDebugList = "lib modules bin";
+#};
+
+# https://github.com/drakmor/mod_proctitle/blob/master/mod_proctitle.c
+#  apacheHttpdproctitle = stdenv.mkDerivation rec {
+#      name = "apacheHttpdproctitle";
+#      buildInputs =[ apacheHttpd ];
+#      src = ./modsetproctitle;
+#      installPhase = ''
+#                 mkdir -p /tmp/src
+#                 mkdir -p /tmp/out
+#                 cp -pr $src/* /tmp/src
+#                 mkdir -p  $out/modules
+#                 ${apacheHttpd.dev}/bin/apxs -S LIBEXECDIR=/tmp/out -c -i /tmp/src/mod_proctitle.c
+#                 cp -pr /tmp/out/* $out/modules
+#                 cp -pr /tmp/out/* $out/modules
+#                 rm -rf /tmp/src /tmp/out
+#      '';
+#      outputs = [ "out" ];
+#      enableParallelBuilding = true;
+#      stripDebugList = "lib modules bin";
+#};
+
+rootfs = stdenv.mkDerivation rec {
+  name = "rootfs";
+  src = ./rootfs;
+  installPhase = ''
+    cp -pr ${src} $out/
+  '';
 };
 
 in 
@@ -384,11 +412,15 @@ pkgs.dockerTools.buildLayeredImage rec {
                  findutils
                  apacheHttpd
                  apacheHttpdmpmITK
-                 apacheHttpdproctitle
+                 rootfs
+                 execline
+                 tzdata
+                 mime-types
     ];
 #apacheHttpdmpmITK 
+#apacheHttpdproctitle
    config = {
-       Entrypoint = [ "/bin/php" ];
+       Entrypoint = [ "/init" ];
        Env = [ "TZ=Europe/Moscow" "TZDIR=/share/zoneinfo" ];
     };
 }
