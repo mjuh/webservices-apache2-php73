@@ -499,8 +499,9 @@ pkgs.dockerTools.buildLayeredImage rec {
                  mime-types
                  postfix
                  locale
+                 s6-portable-utils
+                 s6
     ];
-#apacheHttpdmpmITK 
 #apacheHttpdproctitle
    config = {
        Entrypoint = [ "/init" ];
