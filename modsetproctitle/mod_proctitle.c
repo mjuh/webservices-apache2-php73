@@ -494,8 +494,8 @@ static void restore_proctitle(server_rec *s)
 }
 
 static void proctitle_child_init(apr_pool_t *configpool, server_rec *s) {
-    //ap_log_error (APLOG_MARK, APLOG_DEBUG, 0, s,
-    //                        "proctitle_child_init: Before restore_proctitle");
+    ap_log_error (APLOG_MARK, APLOG_DEBUG, 0, s,
+                            "proctitle_child_init: Before restore_proctitle");
     restore_proctitle(s);
     return;
 }
@@ -546,9 +546,9 @@ enter_process_request_handler (request_rec * r)
         ap_add_output_filter(PROCTITLE_OUT_FILTER, NULL, r, r->connection);
     }
 
-    //ap_log_rerror (APLOG_MARK, APLOG_DEBUG, 0, r,
-    //                        "enter_process_request_handler(%s): Before change_proctitle(%s%s)", 
-    //                        __threadcfg.shm_name, r->hostname, r->uri);
+    ap_log_rerror (APLOG_MARK, APLOG_DEBUG, 0, r,
+                            "enter_process_request_handler(%s): Before change_proctitle(%s%s)", 
+                            __threadcfg.shm_name, r->hostname, r->uri);
     change_proctitle(tcfg, r);
 
     return DECLINED;
@@ -563,9 +563,9 @@ leave_process_request_handler (request_rec * r)
 	return DECLINED;
     }
 
-    //ap_log_rerror (APLOG_MARK, APLOG_DEBUG, 0, r,
-    //                        "leave_process_request_handler(%s): Before restore_proctitle(%s)", 
-    //                        __threadcfg.shm_name, __threadcfg.thread_title);
+    ap_log_rerror (APLOG_MARK, APLOG_DEBUG, 0, r,
+                            "leave_process_request_handler(%s): Before restore_proctitle(%s)", 
+                            __threadcfg.shm_name, __threadcfg.thread_title);
     restore_proctitle(r->server);
 
     return DECLINED;
@@ -594,9 +594,9 @@ static apr_status_t proctitle_out_filter(ap_filter_t *f,
         }
     }
 
-    //ap_log_rerror (APLOG_MARK, APLOG_DEBUG, 0, r,
-    //                        "proctitle_out_filter(%s): Before restore_proctitle(%s)", 
-    //                        __threadcfg.shm_name, __threadcfg.thread_title);
+    ap_log_rerror (APLOG_MARK, APLOG_DEBUG, 0, r,
+                            "proctitle_out_filter(%s): Before restore_proctitle(%s)", 
+                            __threadcfg.shm_name, __threadcfg.thread_title);
     restore_proctitle(r->server);
 
     ap_remove_output_filter(f);
