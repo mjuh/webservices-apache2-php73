@@ -20,9 +20,7 @@ let
 #            url = "ftp://ftp.cs.uu.nl/mirror/postfix/postfix-release/official/${name}.tar.gz";
 #            sha256 = "0nxkszdgs6fs86j6w1lf3vhxvjh1hw2jmrii5icqx9a9xqgg74rw";
 #          })
-#          (
-#           { path = ./patch/postfix/mj/lib; }
-#          ) 
+#       ./patch/postfix/mj/lib
 #      ];
 
 #  srcs = {
