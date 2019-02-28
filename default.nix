@@ -58,12 +58,12 @@ let
           export config_directory=/etc/postfix
           export meta_directory=$out/etc/postfix
           export daemon_directory=$out/libexec/postfix
-          export data_directory=/var/lib/postfix/data
+          export data_directory=/var/lib/postfix
           export html_directory=$out/share/postfix/doc/html
           export mailq_path=$out/bin/mailq
           export manpage_directory=$out/share/man
           export newaliases_path=$out/bin/newaliases
-          export queue_directory=/var/lib/postfix/queue
+          export queue_directory=/var/spool/postfix
           export readme_directory=$out/share/postfix/doc
           export sendmail_path=$out/bin/sendmail
           make makefiles CCARGS='${ccargs}' AUXLIBS='${auxlibs}'
