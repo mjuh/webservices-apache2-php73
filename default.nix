@@ -4,6 +4,11 @@ with lib;
 
 let
 
+  locale = glibcLocales.override {
+      allLocales = false;
+      locales = ["en_US.UTF-8/UTF-8"];
+  };
+
   postfix = stdenv.mkDerivation rec {
 
       name = "postfix-${version}";
@@ -493,12 +498,13 @@ pkgs.dockerTools.buildLayeredImage rec {
                  tzdata
                  mime-types
                  postfix
+                 locale
     ];
 #apacheHttpdmpmITK 
 #apacheHttpdproctitle
    config = {
        Entrypoint = [ "/init" ];
-       Env = [ "TZ=Europe/Moscow" "TZDIR=/share/zoneinfo" ];
+       Env = [ "TZ=Europe/Moscow" "TZDIR=/share/zoneinfo" "LOCALE_ARCHIVE_2_27=${locale}/lib/locale/locale-archive" "LC_ALL=en_US.UTF-8" ];
     };
 }
 
