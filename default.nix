@@ -287,6 +287,8 @@ let
             opcache.file_cache_only = On
             opcache.file_cache = "/opcache"
             opcache.log_verbosity_level = 4
+            SMTP = localhost
+            sendmail_path = /bin/sendmail -t -i
       '';
 
       postInstall = ''
@@ -479,7 +481,7 @@ in
 pkgs.dockerTools.buildLayeredImage rec {
     name = "docker-registry.intr/webservices/php72";
     tag = "master";
-    maxLayers = 128;
+    maxLayers = 124;
     contents = [ php72 
                  perl
                  php72Packages.rrd
@@ -501,6 +503,14 @@ pkgs.dockerTools.buildLayeredImage rec {
                  locale
                  s6-portable-utils
                  s6
+                 perl528Packages.Mojolicious
+                 perl528Packages.base
+                 perl528Packages.libxml_perl
+                 perl528Packages.libnet
+                 perl528Packages.libintl_perl
+                 perl528Packages.LWP 
+                 perl528Packages.ListMoreUtilsXS
+                 perl528Packages.LWPProtocolHttps
     ];
 #apacheHttpdproctitle
    config = {
