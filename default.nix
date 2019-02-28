@@ -4,6 +4,102 @@ with lib;
 
 let
 
+  postfix = stdenv.mkDerivation rec {
+
+      name = "postfix-${version}";
+      version = "3.3.2";
+
+      src = fetchurl {
+         url = "ftp://ftp.cs.uu.nl/mirror/postfix/postfix-release/official/${name}.tar.gz";
+         sha256 = "0nxkszdgs6fs86j6w1lf3vhxvjh1hw2jmrii5icqx9a9xqgg74rw";
+#         sha256 = shellHash;
+      };
+
+#      srcs = [
+#         ( fetchurl {
+#            url = "ftp://ftp.cs.uu.nl/mirror/postfix/postfix-release/official/${name}.tar.gz";
+#            sha256 = "0nxkszdgs6fs86j6w1lf3vhxvjh1hw2jmrii5icqx9a9xqgg74rw";
+#          })
+#          (
+#           { path = ./patch/postfix/mj/lib; }
+#          ) 
+#      ];
+
+#  srcs = {
+#    postfix = fetchurl {
+#         url = "ftp://ftp.cs.uu.nl/mirror/postfix/postfix-release/official/${name}.tar.gz";
+#         sha256 = "0nxkszdgs6fs86j6w1lf3vhxvjh1hw2jmrii5icqx9a9xqgg74rw";
+#      };
+#    mjrate = {
+#         src = ./patch/postfix/mj/lib;
+#     };
+#    };
+#      src = srcs.postfix;
+
+      nativeBuildInputs = [ makeWrapper m4 ];
+      buildInputs = [ db openssl cyrus_sasl icu libnsl pcre ];
+#      setSourceRoot = "postfix-3.3.2";
+      hardeningDisable = [ "format" ];
+      hardeningEnable = [ "pie" ];
+
+      patches = [
+       ./patch/postfix/nix/postfix-script-shell.patch
+       ./patch/postfix/nix/postfix-3.0-no-warnings.patch
+       ./patch/postfix/nix/post-install-script.patch
+       ./patch/postfix/nix/relative-symlinks.patch
+       ./patch/postfix/mj/sendmail.patch
+       ./patch/postfix/mj/postdrop.patch
+       ./patch/postfix/mj/globalmake.patch
+      ];
+
+       ccargs = lib.concatStringsSep " " ([
+          "-DUSE_TLS" "-DUSE_SASL_AUTH" "-DUSE_CYRUS_SASL" "-I${cyrus_sasl.dev}/include/sasl"
+          "-DHAS_DB_BYPASS_MAKEDEFS_CHECK"
+       ]);
+
+       auxlibs = lib.concatStringsSep " " ([
+          "-ldb" "-lnsl" "-lresolv" "-lsasl2" "-lcrypto" "-lssl"
+       ]);
+
+      preBuild = ''
+          pwd
+          ls
+          sed -e '/^PATH=/d' -i postfix-install
+          sed -e "s|@PACKAGE@|$out|" -i conf/post-install
+
+          # post-install need skip permissions check/set on all symlinks following to /nix/store
+          sed -e "s|@NIX_STORE@|$NIX_STORE|" -i conf/post-install
+
+          export command_directory=$out/sbin
+          export config_directory=/etc/postfix
+          export meta_directory=$out/etc/postfix
+          export daemon_directory=$out/libexec/postfix
+          export data_directory=/var/lib/postfix/data
+          export html_directory=$out/share/postfix/doc/html
+          export mailq_path=$out/bin/mailq
+          export manpage_directory=$out/share/man
+          export newaliases_path=$out/bin/newaliases
+          export queue_directory=/var/lib/postfix/queue
+          export readme_directory=$out/share/postfix/doc
+          export sendmail_path=$out/bin/sendmail
+          make makefiles CCARGS='${ccargs}' AUXLIBS='${auxlibs}'
+      '';
+
+      installTargets = [ "non-interactive-package" ];
+      installFlags = [ "install_root=installdir" ];
+
+      postInstall = ''
+          mkdir -p $out
+          mv -v installdir/$out/* $out/
+          cp -rv installdir/etc $out
+          sed -e '/^PATH=/d' -i $out/libexec/postfix/post-install
+          wrapProgram $out/libexec/postfix/post-install \
+            --prefix PATH ":" ${lib.makeBinPath [ coreutils findutils gnugrep ]}
+          wrapProgram $out/libexec/postfix/postfix-script \
+            --prefix PATH ":" ${lib.makeBinPath [ coreutils findutils gnugrep gawk gnused ]}
+      '';
+  };
+
   apacheHttpd = stdenv.mkDerivation rec {
       version = "2.4.35";
       name = "apache-httpd-${version}";
@@ -228,7 +324,7 @@ let
              inherit sha256;
       };
 
-      patches = [ ./fix-paths-php7.patch ];
+      patches = [ ./patch/php7/fix-paths-php7.patch ];
       stripDebugList = "bin sbin lib modules";
       outputs = [ "out" "dev" ];
       doCheck = false;
@@ -330,7 +426,7 @@ let
           sha256 = "609f83e8995416c5491348e07139f26046a579db20cf8488ebf75d314668efcf";
       };
       configureFlags = [ "--with-apxs2=${apacheHttpd}/bin/apxs" ];
-      patches = [ ./itk.patch ];
+      patches = [ ./patch/httpd/itk.patch ];
       postInstall = ''
           mkdir -p $out/modules
           cp -pr /tmp/out/mpm_itk.so $out/modules
@@ -399,6 +495,7 @@ in
 pkgs.dockerTools.buildLayeredImage rec {
     name = "docker-registry.intr/webservices/php72";
     tag = "master";
+    maxLayers = 128;
     contents = [ php72 
                  perl
                  php72Packages.rrd
@@ -416,6 +513,7 @@ pkgs.dockerTools.buildLayeredImage rec {
                  execline
                  tzdata
                  mime-types
+                 postfix
     ];
 #apacheHttpdmpmITK 
 #apacheHttpdproctitle
