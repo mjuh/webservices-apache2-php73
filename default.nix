@@ -8,35 +8,17 @@ let
 
       name = "postfix-${version}";
       version = "3.3.2";
-
-      src = fetchurl {
-         url = "ftp://ftp.cs.uu.nl/mirror/postfix/postfix-release/official/${name}.tar.gz";
-         sha256 = "0nxkszdgs6fs86j6w1lf3vhxvjh1hw2jmrii5icqx9a9xqgg74rw";
-#         sha256 = shellHash;
-      };
-
-#      srcs = [
-#         ( fetchurl {
-#            url = "ftp://ftp.cs.uu.nl/mirror/postfix/postfix-release/official/${name}.tar.gz";
-#            sha256 = "0nxkszdgs6fs86j6w1lf3vhxvjh1hw2jmrii5icqx9a9xqgg74rw";
-#          })
-#       ./patch/postfix/mj/lib
-#      ];
-
-#  srcs = {
-#    postfix = fetchurl {
-#         url = "ftp://ftp.cs.uu.nl/mirror/postfix/postfix-release/official/${name}.tar.gz";
-#         sha256 = "0nxkszdgs6fs86j6w1lf3vhxvjh1hw2jmrii5icqx9a9xqgg74rw";
-#      };
-#    mjrate = {
-#         src = ./patch/postfix/mj/lib;
-#     };
-#    };
-#      src = srcs.postfix;
+      srcs = [
+         ( fetchurl {
+            url = "ftp://ftp.cs.uu.nl/mirror/postfix/postfix-release/official/${name}.tar.gz";
+            sha256 = "0nxkszdgs6fs86j6w1lf3vhxvjh1hw2jmrii5icqx9a9xqgg74rw";
+          })
+       ./patch/postfix/mj/lib
+      ];
 
       nativeBuildInputs = [ makeWrapper m4 ];
       buildInputs = [ db openssl cyrus_sasl icu libnsl pcre ];
-#      setSourceRoot = "postfix-3.3.2";
+      sourceRoot = "postfix-3.3.2";
       hardeningDisable = [ "format" ];
       hardeningEnable = [ "pie" ];
 
@@ -60,8 +42,7 @@ let
        ]);
 
       preBuild = ''
-          pwd
-          ls
+          cp -pr ../lib/* src/global
           sed -e '/^PATH=/d' -i postfix-install
           sed -e "s|@PACKAGE@|$out|" -i conf/post-install
 
