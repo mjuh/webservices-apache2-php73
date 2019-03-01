@@ -440,15 +440,50 @@ let
       outputs = [ "out" ];
       enableParallelBuilding = true;
       stripDebugList = "lib modules bin";
+  };
+
+  rootfs = stdenv.mkDerivation rec {
+      name = "rootfs";
+      src = ./rootfs;
+      installPhase = ''
+         cp -pr ${src} $out/
+      '';
+  };
+
+  mjerrors = stdenv.mkDerivation rec {
+      name = "mjerrors";
+      buildInputs = [ gettext ];
+      src = fetchGit {
+              url = "git@gitlab.intr:shared/http_errors.git";
+              ref = "master";
+            };
+#      outputs = [ "out" ];
+      httpdconfig = ''
+      <IfModule alias_module>
+              Alias /mj_http_errors "/mjstuff/mj_http_errors"
+              <Directory "/mjstuff/mj_http_errors">
+                      AddDefaultCharset UTF-8
+                      Options +FollowSymlinks +Includes
+                      AllowOverride None
+                      AddHandler server-parsed .html
+                      Require all granted
+              </Directory>
+        ErrorDocument 403 /mj_http_errors/http_403.html
+        ErrorDocument 404 /mj_http_errors/http_404.html
+        ErrorDocument 500 /mj_http_errors/http_500.html
+        ErrorDocument 502 /mj_http_errors/http_502.html
+        ErrorDocument 503 /mj_http_errors/http_503.html
+        ErrorDocument 504 /mj_http_errors/http_504.html
+        ErrorDocument 504 $out/http_504.html
+      </IfModule>
+      '';
+      postInstall = ''
+             mkdir -p $out/tmp $out/mjstuff/mj_http_errors
+             cp -pr /mjstuff/mj_http_errors/* $out/mjstuff/mj_http_errors/
+             echo "$httpdconfig" >> $out/tmp/test-conf.ini
+      '';
 };
 
-rootfs = stdenv.mkDerivation rec {
-  name = "rootfs";
-  src = ./rootfs;
-  installPhase = ''
-    cp -pr ${src} $out/
-  '';
-};
 
 in 
 
@@ -485,7 +520,7 @@ pkgs.dockerTools.buildLayeredImage rec {
                  perl528Packages.LWP 
                  perl528Packages.ListMoreUtilsXS
                  perl528Packages.LWPProtocolHttps
-                 apacheHttpdproctitle
+                 mjerrors
     ];
 #apacheHttpdproctitle
    config = {
