@@ -91,7 +91,8 @@ let
           url = "mirror://apache/httpd/httpd-${version}.tar.bz2";
           sha256 = "0mlvwsm7hmpc7db6lfc2nx3v4cll3qljjxhjhgsw6aniskywc1r6";
       };
-      outputs = [ "out" "dev" "man" "doc" ];
+#      outputs = [ "out" "dev" "man" "doc" ];
+      outputs = [ "out" "dev" ]
       setOutputFlags = false; # it would move $out/modules, etc.
       buildInputs = [ perl zlib nss_ldap nss_pam_ldapd openldap];
       prePatch = ''
@@ -293,7 +294,6 @@ let
 
       postInstall = ''
              mkdir -p $out/opcache
-             #cp php.ini-production $out/etc/php.ini
              echo "$phpoptions" >> $out/lib/php.ini
       '';
 
