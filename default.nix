@@ -459,10 +459,13 @@ let
               rev = "f83136c7e6027cb28804172ff3582f635a8d2af7";
             };
       outputs = [ "out" ];
-      httpdconfig = ''
-      <IfModule alias_module>
-              Alias /mj_http_errors "/mjstuff/mj_http_errors"
-              <Directory "/mjstuff/mj_http_errors">
+      postInstall = ''
+             mkdir -p $out/tmp $out/mjstuff/mj_http_errors $out/etc/httpd/conf.d
+             cp -pr /tmp/mj_http_errors/* $out/mjstuff/mj_http_errors/
+             cat <<EOF >  $out/etc/httpd/conf.d/mjerrors.conf
+                   <IfModule alias_module>
+              Alias /mj_http_errors "$out/mjstuff/mj_http_errors"
+              <Directory "$out/mjstuff/mj_http_errors">
                       AddDefaultCharset UTF-8
                       Options +FollowSymlinks +Includes
                       AllowOverride None
@@ -475,13 +478,8 @@ let
         ErrorDocument 502 /mj_http_errors/http_502.html
         ErrorDocument 503 /mj_http_errors/http_503.html
         ErrorDocument 504 /mj_http_errors/http_504.html
-        ErrorDocument 504 $out/http_504.html
       </IfModule>
-      '';
-      postInstall = ''
-             mkdir -p $out/tmp $out/mjstuff/mj_http_errors
-             cp -pr /tmp/mj_http_errors/* $out/mjstuff/mj_http_errors/
-             echo "$httpdconfig" >> $out/tmp/test-conf.ini
+      EOF
       '';
 };
 
