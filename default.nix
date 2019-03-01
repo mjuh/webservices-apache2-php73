@@ -456,8 +456,9 @@ let
       src = fetchGit {
               url = "git@gitlab.intr:shared/http_errors.git";
               ref = "master";
+              rev = "f83136c7e6027cb28804172ff3582f635a8d2af7";
             };
-#      outputs = [ "out" ];
+      outputs = [ "out" ];
       httpdconfig = ''
       <IfModule alias_module>
               Alias /mj_http_errors "/mjstuff/mj_http_errors"
