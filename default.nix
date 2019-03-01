@@ -479,7 +479,7 @@ let
       '';
       postInstall = ''
              mkdir -p $out/tmp $out/mjstuff/mj_http_errors
-             cp -pr /mjstuff/mj_http_errors/* $out/mjstuff/mj_http_errors/
+             cp -pr /tmp/mj_http_errors/* $out/mjstuff/mj_http_errors/
              echo "$httpdconfig" >> $out/tmp/test-conf.ini
       '';
 };
