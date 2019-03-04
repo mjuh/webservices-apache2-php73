@@ -121,8 +121,8 @@ let
       enableParallelBuilding = true;
       stripDebugList = "lib modules bin";
       postInstall = ''
-          mkdir -p $doc/share/doc/httpd
-          mv $out/manual $doc/share/doc/httpd
+          #mkdir -p $doc/share/doc/httpd
+          #mv $out/manual $doc/share/doc/httpd
           mkdir -p $dev/bin
           mv $out/bin/apxs $dev/bin/apxs
       '';
