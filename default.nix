@@ -91,7 +91,6 @@ let
           url = "mirror://apache/httpd/httpd-${version}.tar.bz2";
           sha256 = "0mlvwsm7hmpc7db6lfc2nx3v4cll3qljjxhjhgsw6aniskywc1r6";
       };
-#      outputs = [ "out" "dev" "man" "doc" ];
       outputs = [ "out" "dev" ];
       setOutputFlags = false; # it would move $out/modules, etc.
       buildInputs = [ perl zlib nss_ldap nss_pam_ldapd openldap];
@@ -118,8 +117,6 @@ let
           "--disable-ldap"
           "--with-mpm=prefork"
       ];
-#"--docdir=$(doc)/share/doc"
-#"--enable-mods-shared=all"
 
       enableParallelBuilding = true;
       stripDebugList = "lib modules bin";
@@ -422,26 +419,6 @@ let
       stripDebugList = "lib modules bin";
   };
 
-#https://www.repo.cloudlinux.com/cloudlinux/7/updates-testing/Sources/SPackages/
-  apacheHttpdproctitle = stdenv.mkDerivation rec {
-      name = "apacheHttpdproctitle";
-      buildInputs =[ apacheHttpd ];
-      src = ./modsetproctitle;
-      installPhase = ''
-                 mkdir -p /tmp/src
-                 mkdir -p /tmp/out
-                 cp -pr $src/* /tmp/src
-                 mkdir -p  $out/modules
-                 ${apacheHttpd.dev}/bin/apxs -S LIBEXECDIR=/tmp/out -c -i /tmp/src/mod_proctitle.c
-                 cp -pr /tmp/out/* $out/modules
-                 cp -pr /tmp/out/* $out/modules
-                 rm -rf /tmp/src /tmp/out
-      '';
-      outputs = [ "out" ];
-      enableParallelBuilding = true;
-      stripDebugList = "lib modules bin";
-  };
-
   rootfs = stdenv.mkDerivation rec {
       name = "rootfs";
       src = ./rootfs;
@@ -521,7 +498,6 @@ pkgs.dockerTools.buildLayeredImage rec {
                  perl528Packages.LWPProtocolHttps
                  mjerrors
     ];
-#apacheHttpdproctitle
    config = {
        Entrypoint = [ "/init" ];
        Env = [ "TZ=Europe/Moscow" "TZDIR=/share/zoneinfo" "LOCALE_ARCHIVE_2_27=${locale}/lib/locale/locale-archive" "LC_ALL=en_US.UTF-8" ];
