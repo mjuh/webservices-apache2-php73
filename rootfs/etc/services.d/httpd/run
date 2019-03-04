@@ -3,6 +3,6 @@
 
 foreground { mkdir -p /run/httpd-php72-default }
 foreground { chmod 777 /run/httpd-php72-default }
-foreground { chgrp postdrop /bin/postdrop }
-foreground { chmod  2555 /bin/postdrop }
-exec /bin/httpd -D FOREGROUND -d /etc/httpd
+foreground { chgrp postdrop @postfix@/bin/postdrop }
+foreground { chmod  2555 @postfix@/bin/postdrop }
+exec @apacheHttpd@/bin/httpd -D FOREGROUND -d /etc/httpd

@@ -276,24 +276,6 @@ let
         ./buildconf --force
       '';
 
-      phpoptions = ''
-            date.timezone = Europe/Moscow
-            zend_extension = /ioncube/ioncube_loader_lin_7.2.so
-            zend_extension = opcache.so
-            max_execution_time = 600
-            opcache.enable = On
-            opcache.file_cache_only = On
-            opcache.file_cache = "/opcache"
-            opcache.log_verbosity_level = 4
-            SMTP = localhost
-            sendmail_path = /bin/sendmail -t -i
-      '';
-
-      postInstall = ''
-             mkdir -p $out/opcache
-             echo "$phpoptions" >> $out/lib/php.ini
-      '';
-
       postFixup = ''
              mkdir -p $dev/bin $dev/share/man/man1
              mv $out/bin/phpize $out/bin/php-config $dev/bin/
@@ -419,14 +401,6 @@ let
       stripDebugList = "lib modules bin";
   };
 
-  rootfs = stdenv.mkDerivation rec {
-      name = "rootfs";
-      src = ./rootfs;
-      installPhase = ''
-         cp -pr ${src} $out/
-      '';
-  };
-
   mjerrors = stdenv.mkDerivation rec {
       name = "mjerrors";
       buildInputs = [ gettext ];
@@ -437,36 +411,63 @@ let
             };
       outputs = [ "out" ];
       postInstall = ''
-             mkdir -p $out/tmp $out/mjstuff/mj_http_errors $out/etc/httpd/conf.d
+             mkdir -p $out/tmp $out/mjstuff/mj_http_errors
              cp -pr /tmp/mj_http_errors/* $out/mjstuff/mj_http_errors/
-             cat <<EOF >  $out/etc/httpd/conf.d/mjerrors.conf
-                   <IfModule alias_module>
-              Alias /mj_http_errors "$out/mjstuff/mj_http_errors"
-              <Directory "$out/mjstuff/mj_http_errors">
-                      AddDefaultCharset UTF-8
-                      Options +FollowSymlinks +Includes
-                      AllowOverride None
-                      AddHandler server-parsed .html
-                      Require all granted
-              </Directory>
-        ErrorDocument 403 /mj_http_errors/http_403.html
-        ErrorDocument 404 /mj_http_errors/http_404.html
-        ErrorDocument 500 /mj_http_errors/http_500.html
-        ErrorDocument 502 /mj_http_errors/http_502.html
-        ErrorDocument 503 /mj_http_errors/http_503.html
-        ErrorDocument 504 /mj_http_errors/http_504.html
-      </IfModule>
-      EOF
       '';
-};
+  };
 
+  rootfs = stdenv.mkDerivation rec {
+      nativeBuildInputs = [ 
+         mjerrors
+         phpioncubepack
+         php72
+         php72Packages.rrd
+         php72Packages.redis
+         php72Packages.timezonedb
+         php72Packages.memcached
+         php72Packages.imagick
+         bash
+         apacheHttpd
+         apacheHttpdmpmITK
+         execline
+         s6
+         s6-portable-utils
+         coreutils
+         findutils
+         postfix
+         perl
+         gnugrep
+#         lib
+      ];
+      name = "rootfs";
+      src = ./rootfs;
+      buildPhase = ''
+         echo $nativeBuildInputs
+         export bash="${bash}"
+         export apacheHttpdmpmITK="${apacheHttpdmpmITK}"
+         export apacheHttpd="${apacheHttpd}"
+         export s6portableutils="${s6-portable-utils}"
+         export phpioncubepack="${phpioncubepack}"
+         export php72="${php72}"
+         export mjerrors="${mjerrors}"
+         export postfix="${postfix}"
+         for file in $(find $src/ -type f)
+         do
+           echo $file
+           substituteAllInPlace $file
+         done
+      '';
+      installPhase = ''
+         cp -pr ${src} $out/
+      '';
+  };
 
 in 
 
 pkgs.dockerTools.buildLayeredImage rec {
     name = "docker-registry.intr/webservices/php72";
     tag = "master";
-    maxLayers = 124;
+#    maxLayers = 124;
     contents = [ php72 
                  perl
                  php72Packages.rrd
