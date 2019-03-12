@@ -437,7 +437,6 @@ let
          postfix
          perl
          gnugrep
-#         lib
       ];
       name = "rootfs";
       src = ./rootfs;
