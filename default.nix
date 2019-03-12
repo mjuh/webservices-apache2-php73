@@ -145,8 +145,8 @@ let
   };
 
   php72 = stdenv.mkDerivation rec {
-      name = "php-7.2.15";
-      sha256 = "0m05dmad138qfxcb2z4czf9pfv1746g9yzlch48kjikajhb7cgn9";
+      name = "php-7.2.16";
+      sha256 = "2c0ad10053d58694cd14323248ecd6d9ba71d2733d160973c356ad01d09e7f38";
       enableParallelBuilding = true;
       nativeBuildInputs = [ pkgconfig autoconf ];
 
@@ -285,7 +285,7 @@ let
       '';
 
       src = fetchurl {
-             url = "http://www.php.net/distributions/php-7.2.15.tar.bz2";
+             url = "http://www.php.net/distributions/php-7.2.16.tar.bz2";
              inherit sha256;
       };
 
