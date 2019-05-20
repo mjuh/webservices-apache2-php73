@@ -151,7 +151,7 @@ let
       name = "phpioncubepack";
       src =  fetchurl {
           url = "https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz";
-          sha256 = "50dc6011199e08eb4762732a146196fed727ef6543fc0a06fa1396309726aebe";
+          sha256 = "08bq06yr29zns53m603yv5h11ija8vzkq174qhcj4hz7ya05zb4a";
       };
       installPhase = ''
                   mkdir -p  $out/
