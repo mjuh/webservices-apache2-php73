@@ -10,23 +10,20 @@ let
   };
 
   postfix = stdenv.mkDerivation rec {
-
       name = "postfix-${version}";
-      version = "3.3.2";
+      version = "3.4.5";
       srcs = [
          ( fetchurl {
             url = "ftp://ftp.cs.uu.nl/mirror/postfix/postfix-release/official/${name}.tar.gz";
-            sha256 = "0nxkszdgs6fs86j6w1lf3vhxvjh1hw2jmrii5icqx9a9xqgg74rw";
+            sha256 = "17riwr21i9p1h17wpagfiwkpx9bbx7dy4gpdl219a11akm7saawb";
           })
        ./patch/postfix/mj/lib
       ];
-
       nativeBuildInputs = [ makeWrapper m4 ];
       buildInputs = [ db openssl cyrus_sasl icu libnsl pcre ];
-      sourceRoot = "postfix-3.3.2";
+      sourceRoot = "postfix-3.4.5";
       hardeningDisable = [ "format" ];
       hardeningEnable = [ "pie" ];
-
       patches = [
        ./patch/postfix/nix/postfix-script-shell.patch
        ./patch/postfix/nix/postfix-3.0-no-warnings.patch
@@ -36,16 +33,16 @@ let
        ./patch/postfix/mj/postdrop.patch
        ./patch/postfix/mj/globalmake.patch
       ];
-
        ccargs = lib.concatStringsSep " " ([
-          "-DUSE_TLS" "-DUSE_SASL_AUTH" "-DUSE_CYRUS_SASL" "-I${cyrus_sasl.dev}/include/sasl"
+          "-DUSE_TLS"
           "-DHAS_DB_BYPASS_MAKEDEFS_CHECK"
+          "-DNO_IPV6"
+          "-DNO_KQUEUE" "-DNO_NIS" "-DNO_DEVPOLL" "-DNO_EAI" "-DNO_PCRE"
        ]);
 
        auxlibs = lib.concatStringsSep " " ([
-          "-ldb" "-lnsl" "-lresolv" "-lsasl2" "-lcrypto" "-lssl"
+           "-lresolv" "-lcrypto" "-lssl" "-ldb"
        ]);
-
       preBuild = ''
           cp -pr ../lib/* src/global
           sed -e '/^PATH=/d' -i postfix-install
@@ -74,6 +71,17 @@ let
 
       postInstall = ''
           mkdir -p $out
+          cat << EOF > installdir/etc/postfix/main.cf
+          mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
+          mailbox_size_limit = 0
+          recipient_delimiter = +
+          message_size_limit = 20480000
+          maillog_file = /dev/stdout
+          relayhost = mail-checker2.intr
+          EOF
+          echo "smtp            25/tcp          mail" >> installdir/etc/services
+          echo "postlog   unix-dgram n  -       n       -       1       postlogd" >> installdir/etc/postfix/master.cf
+          echo "*: /dev/null" >> installdir/etc/aliases
           mv -v installdir/$out/* $out/
           cp -rv installdir/etc $out
           sed -e '/^PATH=/d' -i $out/libexec/postfix/post-install
@@ -81,15 +89,22 @@ let
             --prefix PATH ":" ${lib.makeBinPath [ coreutils findutils gnugrep ]}
           wrapProgram $out/libexec/postfix/postfix-script \
             --prefix PATH ":" ${lib.makeBinPath [ coreutils findutils gnugrep gawk gnused ]}
+          rm -f $out/libexec/postfix/post-install \
+                $out/libexec/postfix/postfix-wrapper \
+                $out/libexec/postfix/postfix-script \
+                $out/libexec/postfix/.post-install-wrapped \
+                $out/libexec/postfix/postfix-tls-script \
+                $out/libexec/postfix/postmulti-script \
+                $out/libexec/postfix/.postfix-script-wrapped
       '';
   };
 
   apacheHttpd = stdenv.mkDerivation rec {
-      version = "2.4.35";
+      version = "2.4.39";
       name = "apache-httpd-${version}";
       src = fetchurl {
           url = "mirror://apache/httpd/httpd-${version}.tar.bz2";
-          sha256 = "0mlvwsm7hmpc7db6lfc2nx3v4cll3qljjxhjhgsw6aniskywc1r6";
+          sha256 = "18ngvsjq65qxk3biggnkhkq8jlll9dsg9n3csra9p99sfw2rvjml";
       };
       outputs = [ "out" "dev" ];
       setOutputFlags = false; # it would move $out/modules, etc.
@@ -145,8 +160,8 @@ let
   };
 
   php72 = stdenv.mkDerivation rec {
-      name = "php-7.2.16";
-      sha256 = "2c0ad10053d58694cd14323248ecd6d9ba71d2733d160973c356ad01d09e7f38";
+      name = "php-7.2.18";
+      sha256 = "0wjb9j5slqjx1fn00ljwgy4vlxvz9a6s9677h5z20wqi5nqjf6ps";
       enableParallelBuilding = true;
       nativeBuildInputs = [ pkgconfig autoconf ];
 
@@ -285,7 +300,7 @@ let
       '';
 
       src = fetchurl {
-             url = "http://www.php.net/distributions/php-7.2.16.tar.bz2";
+             url = "http://www.php.net/distributions/php-7.2.18.tar.bz2";
              inherit sha256;
       };
 
@@ -442,6 +457,7 @@ let
       src = ./rootfs;
       buildPhase = ''
          echo $nativeBuildInputs
+         export coreutils="${coreutils}"
          export bash="${bash}"
          export apacheHttpdmpmITK="${apacheHttpdmpmITK}"
          export apacheHttpd="${apacheHttpd}"
@@ -450,6 +466,7 @@ let
          export php72="${php72}"
          export mjerrors="${mjerrors}"
          export postfix="${postfix}"
+         echo ${apacheHttpd}
          for file in $(find $src/ -type f)
          do
            echo $file
@@ -466,7 +483,6 @@ in
 pkgs.dockerTools.buildLayeredImage rec {
     name = "docker-registry.intr/webservices/php72";
     tag = "master";
-#    maxLayers = 124;
     contents = [ php72 
                  perl
                  php72Packages.rrd
@@ -486,8 +502,6 @@ pkgs.dockerTools.buildLayeredImage rec {
                  mime-types
                  postfix
                  locale
-                 s6-portable-utils
-                 s6
                  perl528Packages.Mojolicious
                  perl528Packages.base
                  perl528Packages.libxml_perl
@@ -498,8 +512,11 @@ pkgs.dockerTools.buildLayeredImage rec {
                  perl528Packages.LWPProtocolHttps
                  mjerrors
     ];
+      extraCommands = ''
+          chmod 555 ${postfix}/bin/postdrop
+      '';
    config = {
-       Entrypoint = [ "/init" ];
+       Entrypoint = [ "${apacheHttpd}/bin/httpd" "-D" "FOREGROUND" "-d" "${rootfs}/etc/httpd" ];
        Env = [ "TZ=Europe/Moscow" "TZDIR=/share/zoneinfo" "LOCALE_ARCHIVE_2_27=${locale}/lib/locale/locale-archive" "LC_ALL=en_US.UTF-8" "HTTPD_PORT=8074" "HTTPD_SERVERNAME=web15" ];
     };
 }

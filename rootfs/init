@@ -1,6 +1,0 @@
-#!/bin/execlineb -P
-/bin/export PATH /usr/bin:/bin
-
-foreground { s6-hiercopy /etc/services.d /run/services.d }
-exec s6-svscan -t0 /run/services.d
-

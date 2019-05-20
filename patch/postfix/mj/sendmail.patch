@@ -1,7 +1,7 @@
-Only in postfix-3.3.2-patched/src/sendmail/: Makefile
-diff -c postfix-3.3.2/src/sendmail/sendmail.c postfix-3.3.2-patched/src/sendmail/sendmail.c
-*** postfix-3.3.2/src/sendmail/sendmail.c	2017-10-28 15:13:42.000000000 +0300
---- postfix-3.3.2-patched/src/sendmail/sendmail.c	2019-02-27 18:48:44.223028760 +0300
+Only in postfix-3.4.5-patched/src/sendmail/: Makefile
+diff -c postfix-3.4.5/src/sendmail/sendmail.c postfix-3.3.2-patched/src/sendmail/sendmail.c
+*** postfix-3.4.5/src/sendmail/sendmail.c	2017-10-28 15:13:42.000000000 +0300
+--- postfix-3.4.5-patched/src/sendmail/sendmail.c	2019-02-27 18:48:44.223028760 +0300
 ***************
 *** 499,504 ****
 --- 499,505 ----

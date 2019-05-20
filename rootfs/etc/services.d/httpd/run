@@ -1,8 +1,0 @@
-#!/bin/execlineb -P
-/bin/export PATH /usr/bin:/bin
-
-foreground { mkdir -p /run/httpd-php72-default }
-foreground { chmod 777 /run/httpd-php72-default }
-foreground { chgrp postdrop @postfix@/bin/postdrop }
-foreground { chmod  2555 @postfix@/bin/postdrop }
-exec @apacheHttpd@/bin/httpd -D FOREGROUND -d /etc/httpd
