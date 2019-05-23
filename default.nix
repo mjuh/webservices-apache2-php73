@@ -328,10 +328,10 @@ let
   };
 
   php72Packages.timezonedb = stdenv.mkDerivation rec {
-      name = "timezonedb-2018.9";
+      name = "timezonedb-2019.1";
       src = fetchurl {
           url = "http://pecl.php.net/get/${name}.tgz";
-          sha256 = "661364836f91ec8b5904da4c928b5b2df8cb3af853994f8f4d68b57bc3c32ec8";
+          sha256 = "0rrxfs5izdmimww1w9khzs9vcmgi1l90wni9ypqdyk773cxsn725";
       };
       nativeBuildInputs = [ autoreconfHook ] ;
       buildInputs = [ php72 ];
