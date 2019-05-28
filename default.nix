@@ -466,6 +466,7 @@ let
          export php72="${php72}"
          export mjerrors="${mjerrors}"
          export postfix="${postfix}"
+         export libstdcxx="${gcc-unwrapped.lib}"
          echo ${apacheHttpd}
          for file in $(find $src/ -type f)
          do
@@ -511,6 +512,8 @@ pkgs.dockerTools.buildLayeredImage rec {
                  perl528Packages.ListMoreUtilsXS
                  perl528Packages.LWPProtocolHttps
                  mjerrors
+                 glibc
+                 gcc-unwrapped.lib
     ];
       extraCommands = ''
           chmod 555 ${postfix}/bin/postdrop
