@@ -1,7 +1,7 @@
 with import <nixpkgs> {
 #add_postfix_test
   overlays = [
-    (import (builtins.fetchGit { url = "git@gitlab.intr:_ci/nixpkgs.git"; ref = "adds"; rev = "80bb0352d287009c8b788aa12538e9c91f38c5c1"; }))
+    (import (builtins.fetchGit { url = "git@gitlab.intr:_ci/nixpkgs.git"; ref = "master"; }))
   ];
 };
 
