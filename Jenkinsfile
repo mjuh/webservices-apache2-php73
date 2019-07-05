@@ -1,4 +1,6 @@
 @Library('mj-shared-library') _
+def dockerImage = null
+
 pipeline {
         agent { label 'master' }
         environment {
@@ -7,30 +9,21 @@ pipeline {
         }
         options {
             gitLabConnection(Constants.gitLabConnection)
-            gitlabBuilds(builds: ['Build ftpserver', 'Push Docker image', 'Push latest Docker image'])
+            gitlabBuilds(builds: ['Build', 'Push Docker image'])
             buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
         }
         stages {
-            stage('Build php72') {
+            stage('Build') {
                 steps {
                     gitlabCommitStatus(STAGE_NAME) {
-                         sh ' . /var/jenkins_home/.nix-profile/etc/profile.d/nix.sh && docker load --input $(nix-build --cores 8 default.nix --show-trace | grep tar ) '
+                        script { dockerImage = nixBuildDocker namespace: GROUP_NAME, name: PROJECT_NAME, tag: BRANCH_NAME }
                     }
                 }
             }
             stage('Push Docker image') {
-                when { branch 'master' }
                 steps {
                     gitlabCommitStatus(STAGE_NAME) {
-                          sh 'docker push docker-registry.intr/webservices/php72:master'
-                    }
-                }
-            }
-            stage('Push latest Docker image') {
-                when { not { branch 'master' }}
-                steps {
-                    gitlabCommitStatus(STAGE_NAME) {
-                          sh 'docker push docker-registry.intr/webservices/php72:latest'
+                        pushDocker image: dockerImage
                     }
                 }
             }
