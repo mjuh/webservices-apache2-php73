@@ -16,6 +16,7 @@ pipeline {
             stage('Build') {
                 steps {
                     gitlabCommitStatus(STAGE_NAME) {
+                        sh 'env'
                         script { dockerImage = nixBuildDocker namespace: GROUP_NAME, name: PROJECT_NAME, tag: BRANCH_NAME }
                     }
                 }
