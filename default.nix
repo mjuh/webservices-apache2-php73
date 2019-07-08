@@ -9,6 +9,11 @@ with lib;
 
 let
 
+inherit (builtins) concatMap getEnv toJSON;
+inherit (dockerTools) buildLayeredImage;
+inherit (lib) concatMapStringsSep firstNChars flattenSet dockerRunCmd;
+inherit (stdenv) mkDerivation;
+
   locale = glibcLocales.override {
       allLocales = false;
       locales = ["en_US.UTF-8/UTF-8"];
@@ -312,11 +317,34 @@ let
       '';
   };
 
+dockerArgHints = {
+    init = false;
+    read_only = true;
+    network = "host";
+    environment = { HTTPD_PORT = "\$port"; } ;
+##TO DO:
+##? -v $(pwd)/postfix-conf-test:/etc/postfix:ro ?
+    volumes = [
+      ({ type = "bind"; source = "/etc/passwd"; destination = "/etc/passwd"; readonly = true; })
+      ({ type = "bind"; source = "/etc/group"; destination = "/etc/group"; readonly = true; })
+      ({ type = "bind"; source = "\$sitesenabled"; destination = "/read/sites-enabled"; readonly = true; })
+      ({ type = "bind"; source = "\$phpcustom"; destination = "/etc/php.d/custom.ini"; readonly = true; })
+      ({ type = "bind"; source = "/opcache"; destination = "/opcache"; readonly = false; })
+      ({ type = "bind"; source = "/home"; destination = "/home"; readonly = false; })
+      ({ type = "bind"; source = "/var/spool/postfix"; destination = "/var/spool/postfix"; readonly = false; })
+      ({ type = "bind"; source = "/var/lib/postfix"; destination = "/var/lib/postfix"; readonly = false; })
+      ({ type = "tmpfs"; destination = "/run"; })
+      ({ type = "tmpfs"; destination = "/tmp"; tmpfs-mode = "1777"; })
+    ];
+  };
+
+gitAbbrev = firstNChars 8 (getEnv "GIT_COMMIT");
+
 in 
 
 pkgs.dockerTools.buildLayeredImage rec {
     name = "docker-registry.intr/webservices/php72";
-    tag = "master";
+    tag = if gitAbbrev != "" then gitAbbrev else "latest";
     contents = [ php72 
                  perl
                  php72Packages.rrd
@@ -353,7 +381,18 @@ pkgs.dockerTools.buildLayeredImage rec {
       '';
    config = {
        Entrypoint = [ "${apacheHttpd}/bin/httpd" "-D" "FOREGROUND" "-d" "${rootfs}/etc/httpd" ];
-       Env = [ "TZ=Europe/Moscow" "TZDIR=/share/zoneinfo" "LOCALE_ARCHIVE_2_27=${locale}/lib/locale/locale-archive" "LC_ALL=en_US.UTF-8" "HTTPD_PORT=8074" "HTTPD_SERVERNAME=web15" ];
+       Env = [
+          "TZ=Europe/Moscow"
+          "TZDIR=/share/zoneinfo"
+          "LOCALE_ARCHIVE_2_27=${locale}/lib/locale/locale-archive"
+          "LC_ALL=en_US.UTF-8"
+          "HTTPD_PORT=8074"
+       ];
+       Labels = flattenSet rec {
+          "ru.majordomo.docker.arg-hints-json" = builtins.toJSON dockerArgHints;
+          "ru.majordomo.docker.cmd" = dockerRunCmd dockerArgHints "${name}:${tag}";
+          "ru.majordomo.docker.exec.reload-cmd" = "${apacheHttpd}/bin/httpd -d ${rootfs}/etc/httpd -k graceful";
+       };
     };
 }
 
