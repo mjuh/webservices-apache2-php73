@@ -321,14 +321,13 @@ dockerArgHints = {
     init = false;
     read_only = true;
     network = "host";
-    environment = { HTTPD_PORT = "\$port"; } ;
+    environment = { HTTPD_PORT = "\$socket_http_port"; PHP_SEC = "\$security-level"; } ;
 ##TO DO:
 ##? -v $(pwd)/postfix-conf-test:/etc/postfix:ro ?
     volumes = [
       ({ type = "bind"; source = "/etc/passwd"; destination = "/etc/passwd"; readonly = true; })
       ({ type = "bind"; source = "/etc/group"; destination = "/etc/group"; readonly = true; })
-      ({ type = "bind"; source = "\$sitesenabled"; destination = "/read/sites-enabled"; readonly = true; })
-      ({ type = "bind"; source = "\$phpcustom"; destination = "/etc/php.d/custom.ini"; readonly = true; })
+      ({ type = "bind"; source =  "\$sites-conf-path" ; destination = "/read/sites-enabled"; readonly = true; })
       ({ type = "bind"; source = "/opcache"; destination = "/opcache"; readonly = false; })
       ({ type = "bind"; source = "/home"; destination = "/home"; readonly = false; })
       ({ type = "bind"; source = "/var/spool/postfix"; destination = "/var/spool/postfix"; readonly = false; })
