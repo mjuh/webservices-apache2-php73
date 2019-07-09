@@ -342,7 +342,7 @@ gitAbbrev = firstNChars 8 (getEnv "GIT_COMMIT");
 in 
 
 pkgs.dockerTools.buildLayeredImage rec {
-    name = "docker-registry.intr/webservices/php72";
+    name = "docker-registry.intr/webservices/apache2-php72";
     tag = if gitAbbrev != "" then gitAbbrev else "latest";
     contents = [ php72 
                  perl
