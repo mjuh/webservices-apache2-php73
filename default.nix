@@ -383,7 +383,12 @@ pkgs.dockerTools.buildLayeredImage rec {
       '';
    config = {
        Entrypoint = [ "${apacheHttpd}/bin/httpd" "-D" "FOREGROUND" "-d" "${rootfs}/etc/httpd" ];
-       Healthcheck = [ "${curl}/bin/curl" "--connect-timeout" "15" "--max-time" "19" "-s" "-o" "/dev/null" "-f"  "127.0.0.1:\${HTTPD_PORT}/phpinfo.php" ];
+       Healthcheck =  rec {
+          "Test" = [ "${curl}/bin/curl" "--connect-timeout" "15" "--max-time" "19" "-s" "-o" "/dev/null" "-f"  "127.0.0.1:\${HTTPD_PORT}/phpinfo.php" ];
+           "Interval" = 30000000000;
+           "Timeout" = 10000000000;
+           "Retries" = 3;
+       };
        Env = [
           "TZ=Europe/Moscow"
           "TZDIR=/share/zoneinfo"
