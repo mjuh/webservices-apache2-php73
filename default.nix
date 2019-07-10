@@ -336,6 +336,13 @@ dockerArgHints = {
       ({ type = "bind"; source = "/var/lib/postfix"; target = "/var/lib/postfix"; read_only = false; })
       ({ type = "tmpfs"; target = "/run"; })
     ];
+    healthcheck = {
+          "test" = [ "${curl}/bin/curl" "--connect-timeout" "15" "--max-time" "19" "-s" "-o" "/dev/null" "-f"  "127.0.0.1:\${HTTPD_PORT}/phpinfo.php" ];
+          "interval" = "5s";
+          "timeout" = "30s";
+          "retries" = 3;
+          "start_period" = "40s";
+       };
   };
 
 gitAbbrev = firstNChars 8 (getEnv "GIT_COMMIT");
@@ -383,12 +390,12 @@ pkgs.dockerTools.buildLayeredImage rec {
       '';
    config = {
        Entrypoint = [ "${apacheHttpd}/bin/httpd" "-D" "FOREGROUND" "-d" "${rootfs}/etc/httpd" ];
-       Healthcheck =  rec {
-          "Test" = [ "${curl}/bin/curl" "--connect-timeout" "15" "--max-time" "19" "-s" "-o" "/dev/null" "-f"  "127.0.0.1:\${HTTPD_PORT}/phpinfo.php" ];
-           "Interval" = "5s";
-           "Timeout" = "10s";
-           "Retries" = 3;
-       };
+#       Healthcheck =  rec {
+#          "Test" = [ "${curl}/bin/curl" "--connect-timeout" "15" "--max-time" "19" "-s" "-o" "/dev/null" "-f"  "127.0.0.1:\${HTTPD_PORT}/phpinfo.php" ];
+#           "Interval" = "5s";
+#           "Timeout" = "10s";
+#           "Retries" = 3;
+#       };
        Env = [
           "TZ=Europe/Moscow"
           "TZDIR=/share/zoneinfo"
