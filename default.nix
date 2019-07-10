@@ -386,8 +386,6 @@ pkgs.dockerTools.buildLayeredImage rec {
     ];
       extraCommands = ''
           chmod 555 ${postfix}/bin/postdrop
-    echo 'www:x:33:33:www:/run:' > etc/passwd
-    echo 'www:x:33:' > etc/group
       '';
    config = {
 #       Entrypoint = [ "${apacheHttpd}/bin/httpd" "-D" "FOREGROUND" "-d" "${rootfs}/etc/httpd" ];
