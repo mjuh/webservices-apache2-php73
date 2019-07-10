@@ -327,7 +327,7 @@ dockerArgHints = {
 ##? -v $(pwd)/postfix-conf-test:/etc/postfix:ro ?
 #? ({ type = "bind"; source = "/etc/passwd"; destination = "/etc/passwd"; readonly = true; })
 #? ({ type = "bind"; source = "/etc/group"; destination = "/etc/group"; readonly = true; })
-
+    tmpfs = "/tmp:mode=1777";
     volumes = [
       ({ type = "bind"; source =  "\$sites-conf-path" ; target = "/read/sites-enabled"; read_only = true; })
       ({ type = "bind"; source = "/opcache"; target = "/opcache"; read_only = false; })
@@ -335,7 +335,6 @@ dockerArgHints = {
       ({ type = "bind"; source = "/var/spool/postfix"; target = "/var/spool/postfix"; read_only = false; })
       ({ type = "bind"; source = "/var/lib/postfix"; target = "/var/lib/postfix"; read_only = false; })
       ({ type = "tmpfs"; target = "/run"; })
-      ({ type = "tmpfs"; target = "/tmp"; tmpfs-mode = "1777"; })
     ];
   };
 
