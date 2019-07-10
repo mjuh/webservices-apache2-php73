@@ -337,7 +337,7 @@ dockerArgHints = {
       ({ type = "tmpfs"; target = "/run"; })
     ];
     healthcheck = {
-          "test" = [ "CMD" "${curl}/bin/curl" "--connect-timeout" "15" "--max-time" "19" "-s" "-o" "/dev/null" "-f"  "127.0.0.1:$$HTTPD_PORT/phpinfo.php" ];
+          "test" = [ "CMD-SHELL" "${curl}/bin/curl" "--connect-timeout" "15" "--max-time" "19" "-s" "-o" "/dev/null" "-f"  "127.0.0.1:\${HTTPD_PORT}/phpinfo.php" ];
           "interval" = 30000000000;
           "timeout" = 10000000000;
           "retries" = 3;
