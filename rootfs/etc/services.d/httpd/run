@@ -1,0 +1,3 @@
+#!/bin/execlineb -P
+/bin/export PATH /usr/bin:/bin
+exec @apacheHttpd@/bin/httpd -D FOREGROUND -d @rootfs@/etc/httpd

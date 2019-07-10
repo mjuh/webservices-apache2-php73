@@ -336,12 +336,6 @@ dockerArgHints = {
       ({ type = "bind"; source = "/var/lib/postfix"; target = "/var/lib/postfix"; read_only = false; })
       ({ type = "tmpfs"; target = "/run"; })
     ];
-    healthcheck = {
-          "test" = [ "CMD-SHELL" "${curl}/bin/curl" "--connect-timeout" "15" "--max-time" "19" "-s" "-o" "/dev/null" "-f"  "127.0.0.1:\${HTTPD_PORT}/phpinfo.php" ];
-          "interval" = 30000000000;
-          "timeout" = 10000000000;
-          "retries" = 3;
-       };
   };
 
 gitAbbrev = firstNChars 8 (getEnv "GIT_COMMIT");
@@ -383,18 +377,15 @@ pkgs.dockerTools.buildLayeredImage rec {
                  mjHttpErrorPages
                  glibc
                  gcc-unwrapped.lib
+                 s6
+                 s6-portable-utils
     ];
       extraCommands = ''
           chmod 555 ${postfix}/bin/postdrop
       '';
    config = {
-       Entrypoint = [ "${apacheHttpd}/bin/httpd" "-D" "FOREGROUND" "-d" "${rootfs}/etc/httpd" ];
-#       Healthcheck =  rec {
-#          "Test" = [ "${curl}/bin/curl" "--connect-timeout" "15" "--max-time" "19" "-s" "-o" "/dev/null" "-f"  "127.0.0.1:\${HTTPD_PORT}/phpinfo.php" ];
-#           "Interval" = "5s";
-#           "Timeout" = "10s";
-#           "Retries" = 3;
-#       };
+#       Entrypoint = [ "${apacheHttpd}/bin/httpd" "-D" "FOREGROUND" "-d" "${rootfs}/etc/httpd" ];
+       Entrypoint = [ "/init" ];
        Env = [
           "TZ=Europe/Moscow"
           "TZDIR=/share/zoneinfo"
