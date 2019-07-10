@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/bin/execlineb -P
+/bin/export PATH /usr/bin:/bin
 
-sleep 10
-@curl@/bin/curl --connect-timeout 15 --max-time 19 -s -o /dev/null -f 127.0.0.1:${HTTPD_PORT}/phpinfo.php || kill 1
+foreground { sleep 10 }
+foreground { if -n -x { @curl@/bin/curl --connect-timeout 15 --max-time 19 -s -o /dev/null -f 127.0.0.1:${HTTPD_PORT}/phpinfo.php }  kill 1 }
