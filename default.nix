@@ -329,11 +329,11 @@ dockerArgHints = {
 #? ({ type = "bind"; source = "/etc/group"; destination = "/etc/group"; readonly = true; })
 
     volumes = [
-      ({ type = "bind"; source =  "\$sites-conf-path" ; target = "/read/sites-enabled"; readonly = true; })
-      ({ type = "bind"; source = "/opcache"; target = "/opcache"; readonly = false; })
-      ({ type = "bind"; source = "/home"; target = "/home"; readonly = false; })
-      ({ type = "bind"; source = "/var/spool/postfix"; target = "/var/spool/postfix"; readonly = false; })
-      ({ type = "bind"; source = "/var/lib/postfix"; target = "/var/lib/postfix"; readonly = false; })
+      ({ type = "bind"; source =  "\$sites-conf-path" ; target = "/read/sites-enabled"; read_only = true; })
+      ({ type = "bind"; source = "/opcache"; target = "/opcache"; read_only = false; })
+      ({ type = "bind"; source = "/home"; target = "/home"; read_only = false; })
+      ({ type = "bind"; source = "/var/spool/postfix"; target = "/var/spool/postfix"; read_only = false; })
+      ({ type = "bind"; source = "/var/lib/postfix"; target = "/var/lib/postfix"; read_only = false; })
       ({ type = "tmpfs"; target = "/run"; })
       ({ type = "tmpfs"; target = "/tmp"; tmpfs-mode = "1777"; })
     ];
