@@ -354,6 +354,7 @@ pkgs.dockerTools.buildLayeredImage rec {
                  php72Packages.memcached
                  php72Packages.imagick
                  phpioncubepack
+                 curl
                  bash
                  coreutils
                  findutils
