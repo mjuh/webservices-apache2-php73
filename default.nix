@@ -299,6 +299,7 @@ inherit (stdenv) mkDerivation;
          export coreutils="${coreutils}"
          export bash="${bash}"
          export curl="${curl}"
+         export findutils="${findutils}"
          export rootfs="$out"
          export apacheHttpdmpmITK="${apacheHttpdmpmITK}"
          export apacheHttpd="${apacheHttpd}"

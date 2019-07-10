@@ -1,0 +1,6 @@
+#!/bin/bash
+sleep 10
+
+@findutils@/bin/find /tmp/ -ctime +3 -delete
+
+sleep 7200
