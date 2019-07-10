@@ -338,10 +338,9 @@ dockerArgHints = {
     ];
     healthcheck = {
           "test" = [ "${curl}/bin/curl" "--connect-timeout" "15" "--max-time" "19" "-s" "-o" "/dev/null" "-f"  "127.0.0.1:\${HTTPD_PORT}/phpinfo.php" ];
-          "interval" = "5s";
-          "timeout" = "30s";
+          "interval" = 30000000000;
+          "timeout" = 10000000000;
           "retries" = 3;
-          "start_period" = "40s";
        };
   };
 
