@@ -290,6 +290,7 @@ inherit (stdenv) mkDerivation;
          postfix
          perl
          gnugrep
+         curl
       ];
       name = "rootfs";
       src = ./rootfs;
@@ -297,6 +298,8 @@ inherit (stdenv) mkDerivation;
          echo $nativeBuildInputs
          export coreutils="${coreutils}"
          export bash="${bash}"
+         export curl="${curl}"
+         export rootfs="${rootfs}"
          export apacheHttpdmpmITK="${apacheHttpdmpmITK}"
          export apacheHttpd="${apacheHttpd}"
          export s6portableutils="${s6-portable-utils}"
