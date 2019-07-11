@@ -325,7 +325,7 @@ dockerArgHints = {
     init = false;
     read_only = true;
     network = "host";
-    environment = { HTTPD_PORT = "\$socket_http_port"; PHP_SEC = "\$security-level"; } ;
+    environment = { HTTPD_PORT = "\$socket_http_port"; PHP_SEC = "\$security_level"; } ;
 
 ##TO DO:
 ##? -v $(pwd)/postfix-conf-test:/etc/postfix:ro ?
@@ -333,7 +333,7 @@ dockerArgHints = {
 #? ({ type = "bind"; source = "/etc/group"; destination = "/etc/group"; readonly = true; })
     tmpfs = [ "/tmp:mode=1777" ];
     volumes = [
-      ({ type = "bind"; source =  "\$sites-conf-path" ; target = "/read/sites-enabled"; read_only = true; })
+      ({ type = "bind"; source =  "\$sites_conf_path" ; target = "/read/sites-enabled"; read_only = true; })
       ({ type = "bind"; source = "/opcache"; target = "/opcache"; read_only = false; })
       ({ type = "bind"; source = "/home"; target = "/home"; read_only = false; })
       ({ type = "bind"; source = "/var/spool/postfix"; target = "/var/spool/postfix"; read_only = false; })
