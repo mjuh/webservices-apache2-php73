@@ -325,7 +325,7 @@ dockerArgHints = {
     init = false;
     read_only = true;
     network = "host";
-    environment = { HTTPD_PORT = "\$socket_http_port"; PHP_SEC = "\$security_level"; } ;
+    environment = { HTTPD_PORT = "\$socket_http_port"; PHP_SEC = "\$security_level"; PHP_INI_SCAN_DIR = ":/etc/phpsec/$security_level";} ;
 
 ##TO DO:
 ##? -v $(pwd)/postfix-conf-test:/etc/postfix:ro ?
