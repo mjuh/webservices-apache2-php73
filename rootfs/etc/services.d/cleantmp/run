@@ -2,6 +2,7 @@
 /bin/export PATH /usr/bin:/bin
 
 foreground { sleep 10 }
+foreground { echo cleanup tmp }
 foreground { @findutils@/bin/find /tmp/ -ctime +3 -delete }
 foreground { sleep 7200 }
 
