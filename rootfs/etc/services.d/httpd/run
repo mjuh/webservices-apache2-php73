@@ -1,3 +1,5 @@
-#!/bin/execlineb -P
-/bin/export PATH /usr/bin:/bin
-exec @apacheHttpd@/bin/httpd -D FOREGROUND -d @rootfs@/etc/httpd
+#!@execline@/bin/execlineb -P
+unexport HOME
+unexport PWD
+export PATH /bin
+@apacheHttpd@/bin/httpd -D FOREGROUND -d @rootfs@/etc/httpd
