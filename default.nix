@@ -207,13 +207,6 @@ php72Packages = {
       configureFlags = [ "--with-imagick=${imagemagick.dev}" ];
   };
 
-  libsodiumPhp = buildPhp72Package {
-    name = "libsodium";
-    version = "2.0.21";
-    sha256 = "1sqz5987mg02hd90v695606qj5klpcrvzwfbj0yvg60vakbk3sz4";
-    inputs = [ libsodium.dev ];
-    configureFlags = [ "--with-sodium=${libsodium.dev}" ];
-  };
 };
 
   rootfs = mkRootfs {
