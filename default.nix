@@ -27,12 +27,11 @@ sh = dash.overrideAttrs (_: rec {
 });
 
   php72 = stdenv.mkDerivation rec {
-      name = "php-7.2.20";
+      name = "php-7.3.7";
       src = fetchurl {
-             url = "http://www.php.net/distributions/php-7.2.20.tar.bz2";
-             inherit sha256;
+             url = "http://www.php.net/distributions/php-7.3.7.tar.bz2";
+             sha256 = "9fb829e54e54c483ae8892d1db0f7d79115cc698f2f3591a8a5e58d9410dca84";
       };
-      sha256 = "9fb829e54e54c483ae8892d1db0f7d79115cc698f2f3591a8a5e58d9410dca84";
       enableParallelBuilding = true;
       nativeBuildInputs = [ pkgconfig autoconf ];
       patches = [ ./patch/php7/fix-paths-php7.patch ];
@@ -166,29 +165,29 @@ sh = dash.overrideAttrs (_: rec {
       '';
   };
 
-buildPhp72Package = args: buildPhpPackage ({ php = php72; } // args);
+buildPhp73Package = args: buildPhpPackage ({ php = php73; } // args);
 
-php72Packages = {
-  redis = buildPhp72Package {
+php73Packages = {
+  redis = buildPhp73Package {
       name = "redis";
       version = "4.2.0";
       sha256 = "7655d88addda89814ad2131e093662e1d88a8c010a34d83ece5b9ff45d16b380";
   };
 
-  timezonedb = buildPhp72Package {
+  timezonedb = buildPhp73Package {
       name = "timezonedb";
       version ="2019.1";
       sha256 = "0rrxfs5izdmimww1w9khzs9vcmgi1l90wni9ypqdyk773cxsn725";
   };
 
-  rrd = buildPhp72Package {
+  rrd = buildPhp73Package {
       name = "rrd";
       version = "2.0.1";
       sha256 = "39f5ae515de003d8dad6bfd77db60f5bd5b4a9f6caa41479b1b24b0d6592715d";
       inputs = [ pkgconfig rrdtool ];
   };
 
-  memcached = buildPhp72Package {
+  memcached = buildPhp73Package {
       name = "memcached";
       version = "3.1.3";
       sha256 = "20786213ff92cd7ebdb0d0ac10dde1e9580a2f84296618b666654fd76ea307d4";
@@ -199,21 +198,22 @@ php72Packages = {
       ];
   };
 
-  imagick = buildPhp72Package {
+  imagick = buildPhp73Package {
       name = "imagick";
       version = "3.4.3";
       sha256 = "1f3c5b5eeaa02800ad22f506cd100e8889a66b2ec937e192eaaa30d74562567c";
-      inputs = [ pkgconfig imagemagick.dev pcre ];
+      inputs = [ pkgconfig imagemagick.dev pcre pcre.dev pcre2.dev ];
+      CXXFLAGS = "-I${pcre.dev} -I${pcre2.dev}";
       configureFlags = [ "--with-imagick=${imagemagick.dev}" ];
   };
 
 };
 
   rootfs = mkRootfs {
-      name = "apache2-php72-rootfs";
+      name = "apache2-php73-rootfs";
       src = ./rootfs;
-      inherit curl coreutils findutils apacheHttpdmpmITK apacheHttpd mjHttpErrorPages php72 postfix s6 execline mjperl5Packages;
-      ioncube = ioncube.v72;
+      inherit curl coreutils findutils apacheHttpdmpmITK apacheHttpd mjHttpErrorPages php73 postfix s6 execline mjperl5Packages;
+      ioncube = ioncube.v73;
       s6PortableUtils = s6-portable-utils;
       s6LinuxUtils = s6-linux-utils;
       mimeTypes = mime-types;
@@ -253,7 +253,7 @@ in
 
 pkgs.dockerTools.buildLayeredImage rec {
   maxLayers = 124;
-  name = "docker-registry.intr/webservices/apache2-php72";
+  name = "docker-registry.intr/webservices/apache2-php73";
   tag = if gitAbbrev != "" then gitAbbrev else "latest";
   contents = [
     rootfs
@@ -288,7 +288,7 @@ pkgs.dockerTools.buildLayeredImage rec {
          perlPackages.JSONXS
          perlPackages.POSIXstrftimeCompiler
          perlPackages.perl
-  ] ++ collect isDerivation php72Packages;
+  ] ++ collect isDerivation php73Packages;
   config = {
     Entrypoint = [ "${rootfs}/init" ];
     Env = [
