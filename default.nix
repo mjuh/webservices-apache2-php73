@@ -26,7 +26,7 @@ sh = dash.overrideAttrs (_: rec {
   '';
 });
 
-  php72 = stdenv.mkDerivation rec {
+  php73 = stdenv.mkDerivation rec {
       name = "php-7.3.7";
       src = fetchurl {
              url = "http://www.php.net/distributions/php-7.3.7.tar.bz2";

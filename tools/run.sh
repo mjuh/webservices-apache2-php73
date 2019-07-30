@@ -1,5 +1,5 @@
 #!/bin/bash
-#docker pull docker-registry.intr/webservices/php72:master
+#docker pull docker-registry.intr/webservices/php73:master
 docker run --rm  \
            --read-only \
            --name apache-72-test-8075 \
@@ -16,7 +16,7 @@ docker run --rm  \
             -v $(pwd)/lib-postfix:/var/lib/postfix:rw \
             -v $(pwd)/phpsec/defaultsec.ini:/etc/php.d/defaultsec.ini:ro \
             -v $(pwd)/sites-enabled:/read/sites-enabled:ro \
-            docker-registry.intr/webservices/php72:master
+            docker-registry.intr/webservices/php73:master
 
 
 #-v $(pwd)/postfix-conf-test:/etc/postfix:ro \
