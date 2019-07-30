@@ -2,7 +2,7 @@
 #docker pull docker-registry.intr/webservices/php73:master
 docker run --rm  \
            --read-only \
-           --name apache-72-test-8075 \
+           --name apache-73-test-8075 \
            --net=host \
            --mount type=tmpfs,destination=/run \
            --mount type=tmpfs,destination=/tmp,tmpfs-mode=1777 \

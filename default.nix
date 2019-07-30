@@ -30,7 +30,7 @@ sh = dash.overrideAttrs (_: rec {
       name = "php-7.3.7";
       src = fetchurl {
              url = "http://www.php.net/distributions/php-7.3.7.tar.bz2";
-             sha256 = "9fb829e54e54c483ae8892d1db0f7d79115cc698f2f3591a8a5e58d9410dca84";
+             sha256 = "065z2q6imjxlbh6w1r7565ygqhigfbzcz70iaic74hj626kqyq63";
       };
       enableParallelBuilding = true;
       nativeBuildInputs = [ pkgconfig autoconf ];
@@ -108,7 +108,7 @@ sh = dash.overrideAttrs (_: rec {
        --enable-opcache
        --enable-magic-quotes
        --with-config-file-scan-dir=/etc/php.d
-       --with-pcre-regex=${pcre.dev} PCRE_LIBDIR=${pcre}
+       --with-pcre-regex=${pcre2.dev} PCRE_LIBDIR=${pcre2}
        --with-imap=${uwimap}
        --with-imap-ssl
        --with-mhash
