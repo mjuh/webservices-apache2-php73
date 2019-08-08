@@ -10,7 +10,7 @@ let
 
 inherit (builtins) concatMap getEnv toJSON;
 inherit (dockerTools) buildLayeredImage;
-inherit (lib) concatMapStringsSep firstNChars flattenSet dockerRunCmd buildPhpPackage mkRootfs;
+inherit (lib) concatMapStringsSep firstNChars flattenSet dockerRunCmd mkRootfs;
 inherit (lib.attrsets) collect isDerivation;
 inherit (stdenv) mkDerivation;
 
@@ -25,50 +25,6 @@ sh = dash.overrideAttrs (_: rec {
     ln -s dash "$out/bin/sh"
   '';
 });
-
-buildPhp73Package = args: buildPhpPackage ({ php = php73; } // args);
-
-php73Packages = {
-  redis = buildPhp73Package {
-      name = "redis";
-      version = "4.2.0";
-      sha256 = "7655d88addda89814ad2131e093662e1d88a8c010a34d83ece5b9ff45d16b380";
-  };
-
-  timezonedb = buildPhp73Package {
-      name = "timezonedb";
-      version ="2019.1";
-      sha256 = "0rrxfs5izdmimww1w9khzs9vcmgi1l90wni9ypqdyk773cxsn725";
-  };
-
-  rrd = buildPhp73Package {
-      name = "rrd";
-      version = "2.0.1";
-      sha256 = "39f5ae515de003d8dad6bfd77db60f5bd5b4a9f6caa41479b1b24b0d6592715d";
-      inputs = [ pkgconfig rrdtool ];
-  };
-
-  memcached = buildPhp73Package {
-      name = "memcached";
-      version = "3.1.3";
-      sha256 = "20786213ff92cd7ebdb0d0ac10dde1e9580a2f84296618b666654fd76ea307d4";
-      inputs = [ pkgconfig zlib.dev libmemcached ];
-      configureFlags = [
-        "--with-zlib-dir=${zlib.dev}"
-        "--with-libmemcached-dir=${libmemcached}"
-      ];
-  };
-
-  imagick = buildPhp73Package {
-      name = "imagick";
-      version = "3.4.3";
-      sha256 = "1f3c5b5eeaa02800ad22f506cd100e8889a66b2ec937e192eaaa30d74562567c";
-      inputs = [ pkgconfig imagemagick.dev pcre pcre.dev pcre2.dev ];
-      CXXFLAGS = "-I${pcre.dev} -I${pcre2.dev}";
-      configureFlags = [ "--with-imagick=${imagemagick.dev}" ];
-  };
-
-};
 
   rootfs = mkRootfs {
       name = "apache2-php73-rootfs";
