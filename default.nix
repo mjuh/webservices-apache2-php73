@@ -29,7 +29,7 @@ sh = dash.overrideAttrs (_: rec {
   rootfs = mkRootfs {
       name = "apache2-php73-rootfs";
       src = ./rootfs;
-      inherit curl coreutils findutils apacheHttpdmpmITK apacheHttpd mjHttpErrorPages php73 postfix s6 execline mjperl5Packages;
+      inherit curl coreutils findutils apacheHttpdmpmITK apacheHttpd mjHttpErrorPages php73 postfix s6 execline;
       mjperl5Packages = mjperl5lib;
       ioncube = ioncube.v73;
       s6PortableUtils = s6-portable-utils;
