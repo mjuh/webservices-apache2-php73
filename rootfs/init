@@ -1,0 +1,19 @@
+#!@execline@/bin/execlineb -P
+@execline@/bin/export PATH @execline@/bin:@s6PortableUtils@/bin:@s6LinuxUtils@/bin:@s6@/bin:@coreutils@/bin
+
+foreground { s6-mount -o remount,hidepid=2,gid=0 proc /proc }
+
+foreground { cp @postfix@/bin/postdrop /run/bin/postdrop }
+backtick POSTDROP_UID { stat --printf %u /var/spool/postfix/maildrop }
+backtick POSTDROP_GID { stat --printf %g /var/spool/postfix/maildrop }
+importas POSTDROP_UID POSTDROP_UID
+importas POSTDROP_GID POSTDROP_GID
+foreground { s6-chown -u $POSTDROP_UID -g $POSTDROP_GID /run/bin/postdrop }
+unexport POSTDROP_UID
+unexport POSTDROP_GID
+foreground { s6-chmod 2555 /run/bin/postdrop }
+foreground { s6-chmod 111 /run/bin }
+
+foreground { s6-chmod 777 /tmp }
+foreground { s6-hiercopy /etc/services.d /run/services.d }
+s6-svscan -t0 /run/services.d

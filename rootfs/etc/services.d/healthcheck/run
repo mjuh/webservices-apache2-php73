@@ -1,0 +1,5 @@
+#!@execline@/bin/execlineb -P
+#@execline@/bin/export PATH @execline@/bin:@s6PortableUtils@/bin:@s6@/bin
+importas -D 0 HTTPD_PORT HTTPD_PORT
+foreground { s6-sleep 10 }
+if -n -t { @curl@/bin/curl --connect-timeout 15 --max-time 19 -s -o /dev/null -f 127.0.0.1:${HTTPD_PORT}/phpinfo.php } s6-svc -r /run/services.d/httpd
