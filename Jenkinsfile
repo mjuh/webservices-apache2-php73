@@ -21,6 +21,29 @@ pipeline {
                 }
             }
         }
+        stage('Test Docker image') {
+            steps {
+                gitlabCommitStatus(STAGE_NAME) {
+                    sh '. /home/jenkins/.nix-profile/etc/profile.d/nix.sh && nix-build test.nix --out-link test-result --show-trace'
+                }
+                publishHTML (target: [
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'test-result/coverage-data/vm-state-docker',
+                        reportFiles: 'phpinfo.html, bitrix_server_test.html',
+                        reportName: "coverage-data"
+                    ])
+                publishHTML (target: [
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'test-result',
+                        reportFiles: 'log.html',
+                        reportName: "result"
+                    ])
+            }
+        }
         stage('Push Docker image') {
             steps {
                 gitlabCommitStatus(STAGE_NAME) {
