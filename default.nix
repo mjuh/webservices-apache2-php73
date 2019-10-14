@@ -42,6 +42,8 @@ pkgs.dockerTools.buildLayeredImage rec {
     postfix
     sh
     coreutils
+    libjpeg_turbo
+    optipng
   ]
   ++ collect isDerivation mjperl5Packages
   ++ collect isDerivation phpPackages.php73Packages;
