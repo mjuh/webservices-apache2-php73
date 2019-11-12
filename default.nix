@@ -19,8 +19,9 @@ let
     name = "apache2-rootfs-php73";
     src = ./rootfs;
     inherit curl coreutils findutils apacheHttpdmpmITK apacheHttpd
-      mjHttpErrorPages postfix s6 execline;
+      mjHttpErrorPages s6 execline;
     php73 = php.php73;
+    postfix = sendmail;
     mjperl5Packages = mjperl5lib;
     ioncube = ioncube.v73;
     s6PortableUtils = s6-portable-utils;
@@ -48,7 +49,7 @@ pkgs.dockerTools.buildLayeredImage rec {
     rootfs
     tzdata
     locale
-    postfix
+    sendmail
     sh
     coreutils
     libjpeg_turbo
