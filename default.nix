@@ -30,15 +30,6 @@ let
     libstdcxx = gcc-unwrapped.lib;
   };
 
-  locale = glibcLocales.override {
-    allLocales = false;
-    locales = [
-      "en_US.UTF-8/UTF-8"
-      "ru_UA.UTF-8/UTF-8"
-      "ru_RU.UTF-8/UTF-8"
-    ];
-  };
-
 in
 
 pkgs.dockerTools.buildLayeredImage rec {
