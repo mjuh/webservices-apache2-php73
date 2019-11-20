@@ -1,1 +1,1 @@
-@libstdcxx@/lib/libstdc++.so.6
+@libstdcxx@/lib/libstdc++.so.6 @zlib@/lib/libz.so.1
