@@ -47,6 +47,8 @@ pkgs.dockerTools.buildLayeredImage rec {
     jpegoptim
     (optipng.override{ inherit libpng ;})
     gifsicle nss-certs.unbundled zip
+    gcc-unwrapped.lib
+    glibc
   ]
   ++ collect isDerivation mjperl5Packages
   ++ collect isDerivation phpPackages.php73Packages;
