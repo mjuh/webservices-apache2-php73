@@ -75,6 +75,8 @@ pkgs.dockerTools.buildLayeredImage rec {
       mkdir -p etc
       mkdir -p bin
       mkdir -p usr/local
+      mkdir -p opt
+      ln -s ${php73} opt/php73
       ln -s /bin usr/bin
       ln -s /bin usr/sbin
       ln -s /bin usr/local/bin
