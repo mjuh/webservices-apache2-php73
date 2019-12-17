@@ -2,7 +2,7 @@
 
 with import <nixpkgs> {
   overlays = [
-    (import (builtins.fetchGit { url = "git@gitlab.intr:_ci/nixpkgs.git"; ref = "master"; }))
+    (import (builtins.fetchGit { url = "git@gitlab.intr:_ci/nixpkgs.git"; ref = (if builtins ? getEnv then builtins.getEnv "GIT_BRANCH" else "master"); }))
   ];
 };
 
@@ -13,14 +13,13 @@ let
   inherit (lib.attrsets) collect isDerivation;
   inherit (stdenv) mkDerivation;
 
-  php73DockerArgHints = lib.phpDockerArgHints php.php73;
+  php73DockerArgHints = lib.phpDockerArgHints php73;
 
   rootfs = mkRootfs {
     name = "apache2-rootfs-php73";
     src = ./rootfs;
     inherit zlib curl coreutils findutils apacheHttpdmpmITK apacheHttpd
-      mjHttpErrorPages s6 execline;
-    php73 = php.php73;
+      mjHttpErrorPages s6 execline php73;
     postfix = sendmail;
     mjperl5Packages = mjperl5lib;
     ioncube = ioncube.v73;
@@ -50,10 +49,11 @@ pkgs.dockerTools.buildLayeredImage rec {
     gcc-unwrapped.lib
     glibc
     zlib
-    connectorc perl520
+    mariadbConnectorC
+    perl520
   ]
   ++ collect isDerivation mjperl5Packages
-  ++ collect isDerivation phpPackages.php73Packages;
+  ++ collect isDerivation php73Packages;
   config = {
     Entrypoint = [ "${rootfs}/init" ];
     Env = [
