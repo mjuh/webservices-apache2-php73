@@ -10,4 +10,4 @@ maketestPhp {
   php = php73;
   image = callPackage ./default.nix {};
   rootfs = ./rootfs;
-}
+}{}
