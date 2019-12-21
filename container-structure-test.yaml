@@ -1,0 +1,27 @@
+schemaVersion: '2.0.0'
+
+fileExistenceTests:
+  - name: 'Root'
+    path: '/'
+    shouldExist: true
+  - name: 'bin'
+    path: '/bin'
+    shouldExist: true
+  - name: 'usr/bin'
+    path: '/usr/bin'
+    shouldExist: true
+  - name: 'usr/local/bin'
+    path: '/usr/local/bin'
+    shouldExist: true
+  - name: 'opt'
+    path: '/opt'
+    shouldExist: true
+  - name: 'sendmail'
+    path: '/bin/sendmail'
+    shouldExist: true
+
+commandTests:
+  - name: 'perl version'
+    command: 'perl'
+    args: [ '-v' ]
+    exitCode: 0
