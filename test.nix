@@ -1,4 +1,4 @@
-{ ref ? "master" }:
+{ ref ? "master", debug ? false }:
 
 with import <nixpkgs> {
   overlays = [
@@ -18,6 +18,7 @@ let
 
 in maketestPhp {
   inherit image;
+  inherit debug;
   php = php73;
   inherit containerStructureTestConfig;
   rootfs = ./rootfs;
