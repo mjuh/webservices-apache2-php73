@@ -117,5 +117,15 @@ in maketestPhp {
       action = "succeed";
       command = "${testPhpMariadbConnector}";
     })
+    (dockerNodeTest {
+      description = "Take WordPress screenshot";
+      action = "succeed";
+      command = builtins.concatStringsSep " " [
+        "${firefox}/bin/firefox"
+        "--headless"
+        "--screenshot=/tmp/xchg/coverage-data/wordpress.png"
+        "http://${domain}/"
+      ];
+    })
   ];
 } { }
