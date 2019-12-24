@@ -25,3 +25,11 @@ commandTests:
     command: 'perl'
     args: [ '-v' ]
     exitCode: 0
+  - name: 'optipng version'
+    command: 'optipng'
+    args: [ '-v' ]
+    exitCode: 0
+  - name: 'jpegoptim version'
+    command: 'jpegoptim'
+    args: [ '--version' ]
+    exitCode: 0

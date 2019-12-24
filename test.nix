@@ -136,5 +136,24 @@ in maketestPhp {
         "http://${domain}/"
       ];
     })
+    (dockerNodeTest {
+      description = "Copy parser3.cgi";
+      action = "succeed";
+      command = "cp -v ${parser3}/parser3.cgi /home/u12/${domain}/www/parser3.cgi";
+    })
+    (dockerNodeTest {
+      description = "help parser3.cgi";
+      action = "succeed";
+      command = ''#!{bash}/bin/bash
+          docker exec `docker ps --format '{{ .Names }}' ` /home/u12/${domain}/www/parser3.cgi -h | grep Parser
+      '';
+    })
+    (dockerNodeTest {
+      description = "Perl version";
+      action = "succeed";
+      command = ''#!{bash}/bin/bash
+          docker exec `docker ps --format '{{ .Names }}' ` perl -v | grep 'v5.20'
+      '';
+    })
   ];
 } { }
