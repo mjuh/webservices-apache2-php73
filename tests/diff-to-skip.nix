@@ -1,10 +1,12 @@
 [
-  "root['extensionFuncs']['ionCube Loader'][20]" #ic24_sec_rescan_cache
-  "root['extensionFuncs']['ionCube Loader'][19]" #ic24_sec_cache_do_maintenance
   "root['extensionFuncs']['ionCube Loader'][15]" #ic24_sec_cache_query_id
   "root['extensionFuncs']['ionCube Loader'][17]" #ic24_sec_cache_remove_directory
   "root['extensionFuncs']['ionCube Loader'][18]" #ic24_sec_cache_add_directory
-  "root['extensionFuncs']['ionCube Loader'][13]" #ic24_sec_cache_remove_item_by_id
+  "root['extensionFuncs']['ionCube Loader'][22]" #ic24_sec_rescan_cache
+  "root['extensionFuncs']['ionCube Loader'][14]" #ic24_sec_cache_remove_item_by_id
+  "root['extensionFuncs']['ionCube Loader'][21]" #ic24_sec_cache_do_maintenance
+  "root['extensionFuncs']['ionCube Loader'][19]" #ic24_sec_cache_remove_directory
+  "root['extensionFuncs']['ionCube Loader'][20]" #ic24_sec_cache_add_directory
   "root['includedFiles']"
   "root['version']"
   "root['ini']['extension_dir']['global_value']"
