@@ -170,35 +170,35 @@ in maketestPhp {
       action = "succeed";
       command = runCurlGrep "127.0.0.1/non-existent" "majordomo";
     })
-    (dockerNodeTest {
-      description = "Copy mysqlconnect.php";
-      action = "succeed";
-      command = "cp -v ${./tests/mysqlconnect.php} /home/u12/${domain}/www/mysqlconnect.php";
-    })
-    (dockerNodeTest {
-      description = "Test mysqlconnect with old password hash";
-      action = "succeed";
-      command = "curl http://${domain}/mysqlconnect.php | grep success";
-    })
-    (dockerNodeTest {
-      description = "Copy mysqliconnect.php";
-      action = "succeed";
-      command = "cp -v ${./tests/mysqliconnect.php} /home/u12/${domain}/www/mysqliconnect.php";
-    })
-    (dockerNodeTest {
-      description = "Test mysqlIconnect with old password hash";
-      action = "succeed";
-      command = "curl http://${domain}/mysqliconnect.php | grep success";
-    })
-    (dockerNodeTest {
-      description = "Copy mysqlpdoconnect.php";
-      action = "succeed";
-      command = "cp -v ${./tests/mysqlpdoconnect.php} /home/u12/${domain}/www/mysqlpdoconnect.php";
-    })
-    (dockerNodeTest {
-      description = "Test mysqlPDOconnect with old password hash";
-      action = "succeed";
-      command = "curl http://${domain}/mysqlpdoconnect.php | grep success";
-    })
+#    (dockerNodeTest {
+#      description = "Copy mysqlconnect.php";
+#      action = "succeed";
+#      command = "cp -v ${./tests/mysqlconnect.php} /home/u12/${domain}/www/mysqlconnect.php";
+#    })
+#    (dockerNodeTest {
+#      description = "Test mysqlconnect with old password hash";
+#      action = "succeed";
+#      command = "curl http://${domain}/mysqlconnect.php | grep success";
+#    })
+#    (dockerNodeTest {
+#      description = "Copy mysqliconnect.php";
+#      action = "succeed";
+#      command = "cp -v ${./tests/mysqliconnect.php} /home/u12/${domain}/www/mysqliconnect.php";
+#    })
+#    (dockerNodeTest {
+#      description = "Test mysqlIconnect with old password hash";
+#      action = "succeed";
+#      command = "curl http://${domain}/mysqliconnect.php | grep success";
+#    })
+#    (dockerNodeTest {
+#      description = "Copy mysqlpdoconnect.php";
+#      action = "succeed";
+#      command = "cp -v ${./tests/mysqlpdoconnect.php} /home/u12/${domain}/www/mysqlpdoconnect.php";
+#    })
+#    (dockerNodeTest {
+#      description = "Test mysqlPDOconnect with old password hash";
+#      action = "succeed";
+#      command = "curl http://${domain}/mysqlpdoconnect.php | grep success";
+#    })
   ];
 } { }
