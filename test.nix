@@ -170,5 +170,15 @@ in maketestPhp {
       action = "succeed";
       command = runCurlGrep "127.0.0.1/non-existent" "majordomo";
     })
+    (dockerNodeTest {
+      description = "Copy mysqlconnect.php";
+      action = "succeed";
+      command = "cp -v ${./tests/mysqlconnect.php} /home/u12/${domain}/www/mysqlconnect.php";
+    })
+    (dockerNodeTest {
+      description = "Test mysqlconnect with old password hash";
+      action = "succeed";
+      command = "curl http://${domain}/mysqlconnect.php | grep success";
+    })
   ];
 } { }
