@@ -200,5 +200,10 @@ in maketestPhp {
 #      action = "succeed";
 #      command = "curl http://${domain}/mysqlpdoconnect.php | grep success";
 #    })
+    (dockerNodeTest {
+      description = "deepdiff iterable_item_removed";
+      action = "succeed";
+      command = "jq .iterable_item_removed /tmp/xchg/coverage-data/deepdiff-with-excludes.html ; jq .iterable_item_removed /tmp/xchg/coverage-data/deepdiff-with-excludes.html | grep null ";
+    })
   ];
 } { }
