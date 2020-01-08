@@ -19,6 +19,10 @@ fileExistenceTests:
   - name: 'sendmail'
     path: '/bin/sendmail'
     shouldExist: true
+  - name: 'tmp permissions'
+    path: '/tmp'
+    shouldExist: true
+    permissions: 'dtrwxrwxrwx'
 
 commandTests:
   - name: 'perl version'

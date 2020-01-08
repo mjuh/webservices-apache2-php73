@@ -79,5 +79,7 @@ pkgs.dockerTools.buildLayeredImage rec {
       ln -s /bin usr/bin
       ln -s /bin usr/sbin
       ln -s /bin usr/local/bin
+      mkdir tmp
+      chmod 1777 tmp
     '';
 }

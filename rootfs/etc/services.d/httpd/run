@@ -2,4 +2,5 @@
 unexport HOME
 unexport PWD
 export PATH /bin
+foreground { @s6PortableUtils@/bin/s6-chmod 1777 /tmp }
 @apacheHttpd@/bin/httpd -D FOREGROUND -d @rootfs@/etc/httpd
