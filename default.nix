@@ -2,14 +2,18 @@
 
 with import <nixpkgs> {
   overlays = [
-    (import (builtins.fetchGit { url = "git@gitlab.intr:_ci/nixpkgs.git"; inherit ref; }))
+    (import (builtins.fetchGit {
+      url = "git@gitlab.intr:_ci/nixpkgs.git";
+      inherit ref;
+    }))
   ];
 };
 
 let
   inherit (builtins) concatMap getEnv toJSON;
   inherit (dockerTools) buildLayeredImage;
-  inherit (lib) concatMapStringsSep firstNChars flattenSet dockerRunCmd mkRootfs;
+  inherit (lib)
+    concatMapStringsSep firstNChars flattenSet dockerRunCmd mkRootfs;
   inherit (lib.attrsets) collect isDerivation;
   inherit (stdenv) mkDerivation;
 
@@ -29,30 +33,31 @@ let
     libstdcxx = gcc-unwrapped.lib;
   };
 
-in
-
-pkgs.dockerTools.buildLayeredImage rec {
+in pkgs.dockerTools.buildLayeredImage rec {
   name = "docker-registry.intr/webservices/apache2-php73";
   tag = "latest";
   contents = [
     rootfs
-    tzdata apacheHttpd
+    tzdata
+    apacheHttpd
     locale
     sendmail
     sh
     coreutils
     libjpeg_turbo
     jpegoptim
-    (optipng.override{ inherit libpng ;})
-    gifsicle nss-certs.unbundled zip
+    (optipng.override { inherit libpng; })
+    gifsicle
+    nss-certs.unbundled
+    zip
     gcc-unwrapped.lib
     glibc
     zlib
     mariadbConnectorC
     perl520
-  ]
-  ++ collect isDerivation mjperl5Packages
-  ++ collect isDerivation php73Packages;
+  ] ++ collect isDerivation mjperl5Packages
+    ++ collect isDerivation php73Packages;
+
   config = {
     Entrypoint = [ "${rootfs}/init" ];
     Env = [
@@ -64,22 +69,24 @@ pkgs.dockerTools.buildLayeredImage rec {
     ];
     Labels = flattenSet rec {
       ru.majordomo.docker.arg-hints-json = builtins.toJSON php73DockerArgHints;
-      ru.majordomo.docker.cmd = dockerRunCmd php73DockerArgHints "${name}:${tag}";
-      ru.majordomo.docker.exec.reload-cmd = "${apacheHttpd}/bin/httpd -d ${rootfs}/etc/httpd -k graceful";
+      ru.majordomo.docker.cmd =
+        dockerRunCmd php73DockerArgHints "${name}:${tag}";
+      ru.majordomo.docker.exec.reload-cmd =
+        "${apacheHttpd}/bin/httpd -d ${rootfs}/etc/httpd -k graceful";
     };
   };
-    extraCommands = ''
-      set -xe
-      ls
-      mkdir -p etc
-      mkdir -p bin
-      mkdir -p usr/local
-      mkdir -p opt
-      ln -s ${php73} opt/php73
-      ln -s /bin usr/bin
-      ln -s /bin usr/sbin
-      ln -s /bin usr/local/bin
-      mkdir tmp
-      chmod 1777 tmp
-    '';
+  extraCommands = ''
+    set -xe
+    ls
+    mkdir -p etc
+    mkdir -p bin
+    mkdir -p usr/local
+    mkdir -p opt
+    ln -s ${php73} opt/php73
+    ln -s /bin usr/bin
+    ln -s /bin usr/sbin
+    ln -s /bin usr/local/bin
+    mkdir tmp
+    chmod 1777 tmp
+  '';
 }
