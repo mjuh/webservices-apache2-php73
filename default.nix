@@ -1,4 +1,4 @@
-{ ref ? "master" }:
+{ ref ? "master", debug ? false }:
 
 with import <nixpkgs> {
   overlays = [
@@ -19,6 +19,31 @@ let
 
   php73DockerArgHints = lib.phpDockerArgHints { php = php73; };
 
+  shell = if debug then bashInteractive else sh;
+
+  xdebug = buildPhp73Package {
+    version = "2.8.1";
+    name = "xdebug";
+    sha256 = "080mwr7m72rf0jsig5074dgq2n86hhs7rdbfg6yvnm959sby72w3";
+    doCheck = true;
+    checkTarget = "test";
+  };
+
+  xdebugWithConfig = pkgs.stdenv.mkDerivation rec {
+    name = "xdebugWithConfig";
+    src = ./debug;
+    buildInputs = [ xdebug ];
+    phases = [ "buildPhase" "installPhase" ];
+    buildPhase = ''
+    cp ${src}/etc/php73.d/opcache.ini .
+    substituteInPlace opcache.ini \
+      --replace @xdebug@ ${xdebug}/lib/php/extensions/xdebug.so
+  '';
+    installPhase = ''
+    install -D opcache.ini $out/etc/php73.d/opcache.ini
+  '';
+  };
+
   rootfs = mkRootfs {
     name = "apache2-rootfs-php73";
     src = ./rootfs;
@@ -37,12 +62,13 @@ in pkgs.dockerTools.buildLayeredImage rec {
   name = "docker-registry.intr/webservices/apache2-php73";
   tag = "latest";
   contents = [
+    xdebugWithConfig
     rootfs
     tzdata
     apacheHttpd
     locale
     sendmail
-    sh
+    shell
     coreutils
     libjpeg_turbo
     jpegoptim
@@ -56,7 +82,8 @@ in pkgs.dockerTools.buildLayeredImage rec {
     mariadbConnectorC
     perl520
   ] ++ collect isDerivation mjperl5Packages
-    ++ collect isDerivation php73Packages;
+    ++ collect isDerivation php73Packages ++ lib.optional debug xdebug
+    ++ lib.optionals debug [ curl findutils gnugrep jq mc nano ];
 
   config = {
     Entrypoint = [ "${rootfs}/init" ];

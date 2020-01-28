@@ -14,7 +14,7 @@ let
   phpVersion = "php" + lib.versions.major php73.version
     + lib.versions.minor php73.version;
   containerStructureTestConfig = ./tests/container-structure-test.yaml;
-  image = callPackage ./default.nix { inherit ref; };
+  image = callPackage ./default.nix { inherit ref; inherit debug; };
 
 in maketestPhp {
   inherit image;
