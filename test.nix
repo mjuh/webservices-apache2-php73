@@ -14,7 +14,7 @@ let
   phpVersion = "php" + lib.versions.major php73.version
     + lib.versions.minor php73.version;
   containerStructureTestConfig = ./tests/container-structure-test.yaml;
-  image = callPackage ./default.nix { inherit ref; };
+  image = callPackage ./default.nix { inherit ref; inherit debug; };
 
 in maketestPhp {
   inherit image;
@@ -43,8 +43,9 @@ in maketestPhp {
     (dockerNodeTest {
       description = "Copy phpinfo-json.php.";
       action = "succeed";
-      command =
-        "cp -v ${./tests/phpinfo-json.php} /home/u12/${domain}/www/phpinfo-json.php";
+      command = "cp -v ${
+          ./tests/phpinfo-json.php
+        } /home/u12/${domain}/www/phpinfo-json.php";
     })
     (dockerNodeTest {
       description = "Fetch phpinfo-json.php.";
@@ -138,21 +139,24 @@ in maketestPhp {
     (dockerNodeTest {
       description = "Copy parser3.cgi";
       action = "succeed";
-      command = "cp -v ${parser3}/parser3.cgi /home/u12/${domain}/www/parser3.cgi";
+      command =
+        "cp -v ${parser3}/parser3.cgi /home/u12/${domain}/www/parser3.cgi";
     })
     (dockerNodeTest {
       description = "help parser3.cgi";
       action = "succeed";
-      command = ''#!{bash}/bin/bash
-          docker exec `docker ps --format '{{ .Names }}' ` /home/u12/${domain}/www/parser3.cgi -h | grep Parser
-      '';
+      command = ''
+        #!{bash}/bin/bash
+                  docker exec `docker ps --format '{{ .Names }}' ` /home/u12/${domain}/www/parser3.cgi -h | grep Parser
+              '';
     })
     (dockerNodeTest {
       description = "Perl version";
       action = "succeed";
-      command = ''#!{bash}/bin/bash
-          docker exec `docker ps --format '{{ .Names }}' ` perl -v | grep 'v5.20'
-      '';
+      command = ''
+        #!{bash}/bin/bash
+                  docker exec `docker ps --format '{{ .Names }}' ` perl -v | grep 'v5.20'
+              '';
     })
     (dockerNodeTest {
       description = "Spiner test";
@@ -169,40 +173,42 @@ in maketestPhp {
       action = "succeed";
       command = runCurlGrep "127.0.0.1/non-existent" "majordomo";
     })
-#    (dockerNodeTest {
-#      description = "Copy mysqlconnect.php";
-#      action = "succeed";
-#      command = "cp -v ${./tests/mysqlconnect.php} /home/u12/${domain}/www/mysqlconnect.php";
-#    })
-#    (dockerNodeTest {
-#      description = "Test mysqlconnect with old password hash";
-#      action = "succeed";
-#      command = "curl http://${domain}/mysqlconnect.php | grep success";
-#    })
-#    (dockerNodeTest {
-#      description = "Copy mysqliconnect.php";
-#      action = "succeed";
-#      command = "cp -v ${./tests/mysqliconnect.php} /home/u12/${domain}/www/mysqliconnect.php";
-#    })
-#    (dockerNodeTest {
-#      description = "Test mysqlIconnect with old password hash";
-#      action = "succeed";
-#      command = "curl http://${domain}/mysqliconnect.php | grep success";
-#    })
-#    (dockerNodeTest {
-#      description = "Copy mysqlpdoconnect.php";
-#      action = "succeed";
-#      command = "cp -v ${./tests/mysqlpdoconnect.php} /home/u12/${domain}/www/mysqlpdoconnect.php";
-#    })
-#    (dockerNodeTest {
-#      description = "Test mysqlPDOconnect with old password hash";
-#      action = "succeed";
-#      command = "curl http://${domain}/mysqlpdoconnect.php | grep success";
-#    })
+    # TODO: Add MySQL tests.
+    #    (dockerNodeTest {
+    #      description = "Copy mysqlconnect.php";
+    #      action = "succeed";
+    #      command = "cp -v ${./tests/mysqlconnect.php} /home/u12/${domain}/www/mysqlconnect.php";
+    #    })
+    #    (dockerNodeTest {
+    #      description = "Test mysqlconnect with old password hash";
+    #      action = "succeed";
+    #      command = "curl http://${domain}/mysqlconnect.php | grep success";
+    #    })
+    #    (dockerNodeTest {
+    #      description = "Copy mysqliconnect.php";
+    #      action = "succeed";
+    #      command = "cp -v ${./tests/mysqliconnect.php} /home/u12/${domain}/www/mysqliconnect.php";
+    #    })
+    #    (dockerNodeTest {
+    #      description = "Test mysqlIconnect with old password hash";
+    #      action = "succeed";
+    #      command = "curl http://${domain}/mysqliconnect.php | grep success";
+    #    })
+    #    (dockerNodeTest {
+    #      description = "Copy mysqlpdoconnect.php";
+    #      action = "succeed";
+    #      command = "cp -v ${./tests/mysqlpdoconnect.php} /home/u12/${domain}/www/mysqlpdoconnect.php";
+    #    })
+    #    (dockerNodeTest {
+    #      description = "Test mysqlPDOconnect with old password hash";
+    #      action = "succeed";
+    #      command = "curl http://${domain}/mysqlpdoconnect.php | grep success";
+    #    })
     (dockerNodeTest {
       description = "deepdiff iterable_item_removed";
       action = "succeed";
-      command = "jq .iterable_item_removed /tmp/xchg/coverage-data/deepdiff-with-excludes.html ; jq .iterable_item_removed /tmp/xchg/coverage-data/deepdiff-with-excludes.html | grep null ";
+      command =
+        "jq .iterable_item_removed /tmp/xchg/coverage-data/deepdiff-with-excludes.html ; jq .iterable_item_removed /tmp/xchg/coverage-data/deepdiff-with-excludes.html | grep null ";
     })
   ];
 } { }
