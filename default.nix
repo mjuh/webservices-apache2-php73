@@ -62,7 +62,6 @@ in pkgs.dockerTools.buildLayeredImage rec {
   name = "docker-registry.intr/webservices/apache2-php73";
   tag = "latest";
   contents = [
-    xdebugWithConfig
     rootfs
     tzdata
     apacheHttpd
@@ -82,7 +81,7 @@ in pkgs.dockerTools.buildLayeredImage rec {
     mariadbConnectorC
     perl520
   ] ++ collect isDerivation mjperl5Packages
-    ++ collect isDerivation php73Packages ++ lib.optional debug xdebug
+    ++ collect isDerivation php73Packages ++ lib.optional debug xdebugWithConfig
     ++ lib.optionals debug [ curl findutils gnugrep jq mc nano ];
 
   config = {
