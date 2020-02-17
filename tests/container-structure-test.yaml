@@ -37,3 +37,7 @@ commandTests:
     command: 'jpegoptim'
     args: [ '--version' ]
     exitCode: 0
+  - name: 'convert (Imagemagick cli) version'
+    command: 'convert'
+    args: [ '--version' ]
+    exitCode: 0
