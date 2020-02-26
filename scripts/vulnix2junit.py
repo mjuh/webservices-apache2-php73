@@ -17,7 +17,7 @@ with open(output, 'w') as output_file:
                                                                                                     classname=cve["name"],
                                                                                                     stdout="name: {}\nderivation: {}\nurl: {}".format(cve["name"],
                                                                                                                                                       cve["derivation"],
-                                                                                                                                                      "https://nvd.nist.gov/vuln/detail/" + cve["name"])),
+                                                                                                                                                      "https://nvd.nist.gov/vuln/detail/" + affected)),
                                                                                cve["affected_by"]))),
                                                               vulnix))
                                   for val in sublist])],
