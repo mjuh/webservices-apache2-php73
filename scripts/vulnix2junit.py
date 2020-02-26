@@ -15,9 +15,8 @@ with open(output, 'w') as output_file:
                       [TestSuite("my test suite",
                                  [val for sublist in list(map((lambda cve: list(map(lambda affected: TestCase(affected,
                                                                                                     classname=cve["name"],
-                                                                                                    stdout='name: {}\nderivation: {}\nurl: <a href="{}">{}</a>'.format(cve["name"],
+                                                                                                    stdout="name: {}\nderivation: {}\nurl: {}".format(cve["name"],
                                                                                                                                                       cve["derivation"],
-                                                                                                                                                      "https://nvd.nist.gov/vuln/detail/" + cve["name"],
                                                                                                                                                       "https://nvd.nist.gov/vuln/detail/" + cve["name"])),
                                                                                cve["affected_by"]))),
                                                               vulnix))
