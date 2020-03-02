@@ -28,7 +28,6 @@ pipeline {
     }
     post {
         always { sh "rm --force --recursive $JUNIT_OUTPUT_DIRECTORY $VULNIX_CACHE_DIRECTORY" }
-        success { notifySlack "Build ${JOB_NAME} succeeded" , "green" }
         failure { notifySlack "Build failled: ${JOB_NAME} [<${RUN_DISPLAY_URL}|${BUILD_NUMBER}>]", "red" }
     }
 }
