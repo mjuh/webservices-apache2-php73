@@ -1,8 +1,9 @@
-{ ref ? "master", debug ? false }:
+{ overlayUrl ? "git@gitlab.intr:_ci/nixpkgs.git"
+, overlayRef ? "master" }:
 
 with import <nixpkgs> {
   overlays = [
-    (import (builtins.fetchGit {
+    (import (builtins.fetchGit { url = overlayUrl; ref = overlayRef; }))
       url = "git@gitlab.intr:_ci/nixpkgs.git";
       inherit ref;
     }))
