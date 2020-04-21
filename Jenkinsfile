@@ -1,2 +1,1 @@
-@Library('mj-shared-library') _
-buildWebService()
+buildWebService publishOnInternet: true
