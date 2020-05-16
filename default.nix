@@ -103,16 +103,16 @@ in pkgs.dockerTools.buildLayeredImage rec {
   };
   extraCommands = ''
     set -xe
-    ls
-    mkdir -p etc
-    mkdir -p bin
+
+    mkdir {opt,root,tmp}
+    chmod 1777 tmp
+    chmod 0700 root
+
     mkdir -p usr/local
-    mkdir -p opt
+
     ln -s ${php73} opt/php73
     ln -s /bin usr/bin
     ln -s /bin usr/sbin
     ln -s /bin usr/local/bin
-    mkdir tmp
-    chmod 1777 tmp
   '';
 }
