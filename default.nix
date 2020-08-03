@@ -72,6 +72,7 @@ in pkgs.dockerTools.buildLayeredImage rec {
     jpegoptim
     (optipng.override { inherit libpng; })
     imagemagickBig
+    ghostscript
     gifsicle
     nss-certs.unbundled
     zip
