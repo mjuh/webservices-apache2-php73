@@ -47,7 +47,7 @@ let
     name = "apache2-rootfs-php73";
     src = ./rootfs;
     inherit zlib curl coreutils findutils apacheHttpdmpmITK apacheHttpd
-      mjHttpErrorPages s6 execline php73;
+      mjHttpErrorPages s6 execline php73 logger;
     postfix = sendmail;
     mjperl5Packages = mjperl5lib;
     ioncube = ioncube.v73;
