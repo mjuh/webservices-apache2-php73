@@ -47,7 +47,7 @@ let
     name = "apache2-rootfs-php73";
     src = ./rootfs;
     inherit zlib curl coreutils findutils apacheHttpdmpmITK apacheHttpd
-      mjHttpErrorPages s6 execline php73;
+      mjHttpErrorPages s6 execline php73 logger;
     postfix = sendmail;
     mjperl5Packages = mjperl5lib;
     ioncube = ioncube.v73;
@@ -80,6 +80,7 @@ in pkgs.dockerTools.buildLayeredImage rec {
     glibc
     zlib
     mariadbConnectorC
+    logger
     perl520
   ] ++ collect isDerivation mjperl5Packages
     ++ collect isDerivation php73Packages ++ lib.optional debug xdebugWithConfig
