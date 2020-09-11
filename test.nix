@@ -1,12 +1,13 @@
-{ overlayUrl ? "git@gitlab.intr:_ci/nixpkgs.git"
-, overlayRef ? "master"
-, debug ? false }:
-
-with import <nixpkgs> {
+{ nixpkgs ? import <nixpkgs> {
   overlays = [
-    (import (builtins.fetchGit { url = overlayUrl; ref = overlayRef; }))
+    (import (builtins.fetchGit {
+      url = "git@gitlab.intr:_ci/nixpkgs.git";
+      ref = "master";
+    }))
   ];
-};
+} }:
+
+with nixpkgs;
 
 let
   domain = "php73.ru";
