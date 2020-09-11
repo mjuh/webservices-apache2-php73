@@ -1,11 +1,4 @@
-{ nixpkgs ? import <nixpkgs> {
-  overlays = [
-    (import (builtins.fetchGit {
-      url = "git@gitlab.intr:_ci/nixpkgs.git";
-      ref = "master";
-    }))
-  ];
-} }:
+{ nixpkgs ? (import ./common.nix).nixpkgs }:
 
 with nixpkgs;
 
