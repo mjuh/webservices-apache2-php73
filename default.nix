@@ -84,8 +84,7 @@ in pkgs.dockerTools.buildLayeredImage rec {
     logger
     perl520
   ] ++ collect isDerivation mjperl5Packages
-    ++ collect isDerivation php73Packages ++ lib.optional debug xdebugWithConfig
-    ++ lib.optionals debug [ curl findutils gnugrep jq mc nano ];
+    ++ collect isDerivation php73Packages;
 
   config = {
     Entrypoint = [ "${rootfs}/init" ];
