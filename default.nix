@@ -19,8 +19,6 @@ let
 
   php73DockerArgHints = lib.phpDockerArgHints { php = php73; };
 
-  shell = if debug then bashInteractive else sh;
-
   xdebug = buildPhp73Package {
     version = "2.8.1";
     name = "xdebug";
