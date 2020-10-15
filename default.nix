@@ -87,6 +87,7 @@ in pkgs.dockerTools.buildLayeredImage rec {
       "LOCALE_ARCHIVE_2_27=${locale}/lib/locale/locale-archive"
       "LOCALE_ARCHIVE=${locale}/lib/locale/locale-archive"
       "LC_ALL=en_US.UTF-8"
+      "LD_PRELOAD=${jemalloc}/lib/libjemalloc.so"
     ];
     Labels = flattenSet rec {
       ru.majordomo.docker.arg-hints-json = builtins.toJSON php73DockerArgHints;
