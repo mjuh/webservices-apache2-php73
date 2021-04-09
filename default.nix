@@ -1,12 +1,11 @@
-{ nixpkgs }:
+{ nixpkgs, xdebug_enable ? false }:
 
 with nixpkgs;
 
 let
   inherit (builtins) concatMap getEnv toJSON;
   inherit (dockerTools) buildLayeredImage;
-  inherit (lib)
-    concatMapStringsSep firstNChars flattenSet dockerRunCmd mkRootfs;
+  inherit (lib) concatMapStringsSep firstNChars flattenSet dockerRunCmd mkRootfs optional;
   inherit (lib.attrsets) collect isDerivation;
   inherit (stdenv) mkDerivation;
 
@@ -54,7 +53,8 @@ in pkgs.dockerTools.buildLayeredImage rec {
     logger
     perl520
   ] ++ collect isDerivation mjperl5Packages
-    ++ collect isDerivation php73Packages;
+    ++ collect isDerivation php73Packages
+    ++ optional xdebug_enable xdebug;
 
   config = {
     Entrypoint = [ "${rootfs}/init" ];
