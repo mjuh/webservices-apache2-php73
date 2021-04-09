@@ -14,34 +14,11 @@ let
 
   shell = sh;
 
-  xdebug = buildPhp73Package {
-    version = "2.8.1";
-    name = "xdebug";
-    sha256 = "080mwr7m72rf0jsig5074dgq2n86hhs7rdbfg6yvnm959sby72w3";
-    doCheck = true;
-    checkTarget = "test";
-  };
-
-  xdebugWithConfig = pkgs.stdenv.mkDerivation rec {
-    name = "xdebugWithConfig";
-    src = ./debug;
-    buildInputs = [ xdebug ];
-    phases = [ "buildPhase" "installPhase" ];
-    buildPhase = ''
-    cp ${src}/etc/php73.d/opcache.ini .
-    substituteInPlace opcache.ini \
-      --replace @xdebug@ ${xdebug}/lib/php/extensions/xdebug.so
-  '';
-    installPhase = ''
-    install -D opcache.ini $out/etc/php73.d/opcache.ini
-  '';
-  };
-
   rootfs = mkRootfs {
     name = "apache2-rootfs-php73";
     src = ./rootfs;
     inherit zlib curl coreutils findutils apacheHttpdmpmITK apacheHttpd
-      mjHttpErrorPages s6 execline php73 logger;
+      mjHttpErrorPages s6 execline php73 logger xdebug;
     postfix = sendmail;
     mjperl5Packages = mjperl5lib;
     ioncube = ioncube.v73;

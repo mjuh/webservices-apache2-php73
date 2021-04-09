@@ -1,7 +1,7 @@
 {
   description = "Docker container with Apache and PHP builded by Nix";
 
-  inputs.majordomo.url = "git+https://gitlab.intr/_ci/nixpkgs";
+  inputs.majordomo.url = "git+https://gitlab.intr/_ci/nixpkgs?ref=xdebug";
 
   outputs = { self, nixpkgs, majordomo }: {
 
