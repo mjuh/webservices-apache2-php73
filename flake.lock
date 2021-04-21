@@ -94,16 +94,15 @@
         "nixpkgs-unstable": "nixpkgs-unstable"
       },
       "locked": {
-        "lastModified": 1619008960,
-        "narHash": "sha256-SBvfi9jLe/28oQYYGG2el7z5cMmdOxd7zTJZxstYoEU=",
-        "ref": "refactor-deploy-script",
-        "rev": "96a871bb5c6132efafc563c657cfd0e45d0d97d5",
-        "revCount": 852,
+        "lastModified": 1619011138,
+        "narHash": "sha256-qG1uynoUlAIRYrhvowgLlSAcyEGMkqFOz+AA7t9TI6w=",
+        "ref": "master",
+        "rev": "0523c2960287bb00955e2ab9ac5c52212bdf51e9",
+        "revCount": 860,
         "type": "git",
         "url": "https://gitlab.intr/_ci/nixpkgs"
       },
       "original": {
-        "ref": "refactor-deploy-script",
         "type": "git",
         "url": "https://gitlab.intr/_ci/nixpkgs"
       }

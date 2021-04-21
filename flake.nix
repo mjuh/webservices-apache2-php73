@@ -5,7 +5,7 @@
     deploy-rs.url = "github:kitnil/deploy-rs?ref=dry-activate";
     flake-compat = { url = "github:edolstra/flake-compat"; flake = false; };
     flake-utils.url = "github:numtide/flake-utils";
-    majordomo.url = "git+https://gitlab.intr/_ci/nixpkgs?ref=refactor-deploy-script";
+    majordomo.url = "git+https://gitlab.intr/_ci/nixpkgs";
   };
 
   outputs = { self, flake-utils, nixpkgs, majordomo, deploy-rs, ... } @ inputs:
