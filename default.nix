@@ -1,4 +1,4 @@
-{ nixpkgs, xdebug_enable ? false }:
+{ nixpkgs, tag ? "latest" }:
 
 with nixpkgs;
 
@@ -28,8 +28,8 @@ let
   };
 
 in pkgs.dockerTools.buildLayeredImage rec {
+  inherit tag;
   name = "docker-registry.intr/webservices/apache2-php73";
-  tag = "latest";
   contents = [
     rootfs
     tzdata
@@ -54,7 +54,7 @@ in pkgs.dockerTools.buildLayeredImage rec {
     perl520
   ] ++ collect isDerivation mjperl5Packages
     ++ collect isDerivation php73Packages
-    ++ optional xdebug_enable xdebug;
+    ++ optional (tag == "debug") xdebug;
 
   config = {
     Entrypoint = [ "${rootfs}/init" ];

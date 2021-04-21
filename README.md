@@ -15,7 +15,8 @@ To build Apache PHP 7.3, follow these steps:
 
 Linux and macOS:
 ``` shell
-docker load --input $(nix-build --argstr overlayUrl https://github.com/mjuh/ci-nixpkgs.git --no-out-link)
+nix-build .#container-master
+docker load --input ./result
 ```
 
 Hint: If you failed to build with your current nixpkgs version, try to

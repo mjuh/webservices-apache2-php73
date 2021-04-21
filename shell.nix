@@ -1,1 +1,17 @@
-import ((builtins.fetchTarball "https://gitlab.intr/_ci/nixpkgs/-/archive/ec2f8e5c9297082082096c37a134ed2359cff078/nixpkgs-master.tar.gz") + "/pkgs/nix-shell")
+# SPDX-FileCopyrightText: 2020 Serokell <https://serokell.io/>
+#
+# SPDX-License-Identifier: MPL-2.0
+
+(import
+  (
+    let
+      lock = builtins.fromJSON (builtins.readFile ./flake.lock);
+    in
+    fetchTarball {
+      url = "https://github.com/edolstra/flake-compat/archive/${lock.nodes.flake-compat.locked.rev}.tar.gz";
+      sha256 = lock.nodes.flake-compat.locked.narHash;
+    }
+  )
+  {
+    src = ./.;
+  }).shellNix
