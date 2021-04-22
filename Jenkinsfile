@@ -1,1 +1,1 @@
-buildWebService(publishOnInternet: true, flake: true, nixArgs: ["--impure"])
+deployRS(deploy: true, scanPasswords: true)
