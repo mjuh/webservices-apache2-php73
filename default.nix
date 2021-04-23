@@ -52,6 +52,9 @@ in pkgs.dockerTools.buildLayeredImage rec {
     mariadbConnectorC
     logger
     perl520
+    gifsicle
+    ghostscript
+    nodePackages.svgo
   ] ++ collect isDerivation mjperl5Packages
     ++ collect isDerivation php73Packages
     ++ optional (tag == "debug") xdebug;
