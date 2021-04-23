@@ -81,12 +81,13 @@ in pkgs.dockerTools.buildLayeredImage rec {
   extraCommands = ''
     set -xe
 
-    mkdir {opt,root,tmp}
+    mkdir -p {opt,root,tmp,bin}
     chmod 1777 tmp
     chmod 0700 root
-
+    chmod 755 bin
     mkdir -p usr/local
 
+    ln -s ${nodePackages.svgo}/bin/svgo bin/svgo
     ln -s ${php73} opt/php73
     ln -s /bin usr/bin
     ln -s /bin usr/sbin
