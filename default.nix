@@ -17,7 +17,8 @@ let
     name = "apache2-rootfs-php73";
     src = ./rootfs;
     inherit zlib curl coreutils findutils apacheHttpdmpmITK apacheHttpd
-      mjHttpErrorPages s6 execline php73 logger xdebug;
+      mjHttpErrorPages s6 execline php73 logger;
+    # TODO: Fix "error: undefined variable 'xdebug'" in apps/moodle
     postfix = sendmail;
     mjperl5Packages = mjperl5lib;
     ioncube = ioncube.v73;
@@ -56,8 +57,10 @@ in pkgs.dockerTools.buildLayeredImage rec {
     ghostscript
     nodePackages.svgo
   ] ++ collect isDerivation mjperl5Packages
-    ++ collect isDerivation php73Packages
-    ++ optional (tag == "debug") xdebug;
+    ++ collect isDerivation php73Packages;
+
+  # TODO: Fix "error: undefined variable 'xdebug'" in apps/moodle
+  # ++ optional (tag == "debug") xdebug;
 
   config = {
     Entrypoint = [ "${rootfs}/init" ];
