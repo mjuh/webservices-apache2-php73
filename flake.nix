@@ -35,7 +35,11 @@
           nixUnstable
           deploy-rs.outputs.packages.${system}.deploy-rs
         ];
-      };
+        shellHook = ''
+          . ${nixUnstable}/share/bash-completion/completions/nix
+          export LANG=C
+        '';
+   };
     }) // (
       let
         system = "x86_64-linux";
