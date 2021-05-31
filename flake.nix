@@ -2,7 +2,7 @@
   description = "Docker container with Apache and PHP builded by Nix";
 
   inputs = {
-    deploy-rs.url = "github:kitnil/deploy-rs?ref=dry-activate";
+    deploy-rs.url = "github:serokell/deploy-rs";
     flake-compat = { url = "github:edolstra/flake-compat"; flake = false; };
     flake-utils.url = "github:numtide/flake-utils";
     majordomo.url = "git+https://gitlab.intr/_ci/nixpkgs";
@@ -35,7 +35,11 @@
           nixUnstable
           deploy-rs.outputs.packages.${system}.deploy-rs
         ];
-      };
+        shellHook = ''
+          . ${nixUnstable}/share/bash-completion/completions/nix
+          export LANG=C
+        '';
+   };
     }) // (
       let
         system = "x86_64-linux";
