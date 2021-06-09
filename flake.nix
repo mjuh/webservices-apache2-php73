@@ -10,16 +10,36 @@
 
   outputs = { self, flake-utils, nixpkgs, majordomo, deploy-rs, ... } @ inputs:
     flake-utils.lib.eachDefaultSystem (system: {
-      packages = {
+      packages = rec {
+        rootfs =
+          with nixpkgs.legacyPackages.${system};
+          with majordomo.outputs.nixpkgs;
+          lib.mkRootfs {
+            name = "apache2-rootfs-php73";
+            src = ./rootfs;
+            inherit zlib curl coreutils findutils apacheHttpdmpmITK apacheHttpd
+              mjHttpErrorPages s6 execline php73 logger;
+            # TODO: Fix "error: undefined variable 'xdebug'" in apps/moodle
+            postfix = sendmail;
+            mjperl5Packages = mjperl5lib;
+            ioncube = ioncube.v73;
+            s6PortableUtils = s6-portable-utils;
+            s6LinuxUtils = s6-linux-utils;
+            mimeTypes = mime-types;
+            libstdcxx = gcc-unwrapped.lib;
+          };
         container-latest = import ./default.nix {
+          inherit rootfs;
           nixpkgs = majordomo.outputs.nixpkgs;
           tag = "latest";
         };
         container-master = import ./default.nix {
+          inherit rootfs;
           nixpkgs = majordomo.outputs.nixpkgs;
           tag = "master";
         };
         container-debug = import ./default.nix {
+          inherit rootfs;
           nixpkgs = majordomo.outputs.nixpkgs;
           tag = "debug";
         };

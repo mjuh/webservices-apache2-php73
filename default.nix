@@ -1,4 +1,4 @@
-{ nixpkgs, tag ? "latest" }:
+{ nixpkgs, rootfs, tag ? "latest" }:
 
 with nixpkgs;
 
@@ -12,21 +12,6 @@ let
   php73DockerArgHints = lib.phpDockerArgHints { php = php73; };
 
   shell = sh;
-
-  rootfs = mkRootfs {
-    name = "apache2-rootfs-php73";
-    src = ./rootfs;
-    inherit zlib curl coreutils findutils apacheHttpdmpmITK apacheHttpd
-      mjHttpErrorPages s6 execline php73 logger;
-    # TODO: Fix "error: undefined variable 'xdebug'" in apps/moodle
-    postfix = sendmail;
-    mjperl5Packages = mjperl5lib;
-    ioncube = ioncube.v73;
-    s6PortableUtils = s6-portable-utils;
-    s6LinuxUtils = s6-linux-utils;
-    mimeTypes = mime-types;
-    libstdcxx = gcc-unwrapped.lib;
-  };
 
 in pkgs.dockerTools.buildLayeredImage rec {
   inherit tag;
