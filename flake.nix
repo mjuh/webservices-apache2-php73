@@ -5,7 +5,7 @@
     deploy-rs.url = "github:serokell/deploy-rs";
     flake-compat = { url = "github:edolstra/flake-compat"; flake = false; };
     flake-utils.url = "github:numtide/flake-utils";
-    majordomo.url = "git+https://gitlab.intr/_ci/nixpkgs";
+    majordomo.url = "git+file:///home/oleg/majordomo/_ci/nixpkgs";
   };
 
   outputs = { self, flake-utils, nixpkgs, majordomo, deploy-rs, ... } @ inputs:
@@ -27,6 +27,7 @@
             s6LinuxUtils = s6-linux-utils;
             mimeTypes = mime-types;
             libstdcxx = gcc-unwrapped.lib;
+            fcgid = apacheHttpdmpmModFcgid;
           };
         service-apache = with nixpkgs.legacyPackages.${system};
           callPackage ({ stdenv, writeScriptBin, apacheHttpd, runtimeShell, rootfs }: stdenv.mkDerivation rec {
@@ -88,6 +89,7 @@
         };
       in
         with nixpkgs.legacyPackages.${system}; {
+          inherit (majordomo.packages.x86_64-linux) php73;
           deploy.nodes = {
             apache2-php73 = node // {
               hostname = "jenkins.intr";
