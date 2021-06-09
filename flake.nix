@@ -28,6 +28,24 @@
             mimeTypes = mime-types;
             libstdcxx = gcc-unwrapped.lib;
           };
+        service-apache = with nixpkgs.legacyPackages.${system};
+          callPackage ({ stdenv, writeScriptBin, apacheHttpd, runtimeShell, rootfs }: stdenv.mkDerivation rec {
+            pname = "service-apache";
+            version = "0.0.1";
+            src = writeScriptBin "httpd" ''
+              #!${runtimeShell}
+              set -euo pipefail
+              exec -a apache2-php73 ${apacheHttpd}/bin/httpd -D FOREGROUND -d ${rootfs}/etc/httpd "$@"
+            '';
+            dontUnpack = true;
+            buildPhase = ''
+              cp -a "$src/bin" .
+            '';
+            installPhase = ''
+              mkdir -p "$out"/bin
+              install bin/httpd "$out"/bin/httpd
+            '';
+          }) { inherit (majordomo.packages.${system}) apacheHttpd; inherit rootfs; };
         container-latest = import ./default.nix {
           inherit rootfs;
           nixpkgs = majordomo.outputs.nixpkgs;
