@@ -46,7 +46,10 @@
               mkdir -p "$out"/bin
               install bin/httpd "$out"/bin/httpd
             '';
-          }) { inherit (majordomo.packages.${system}) apacheHttpd; inherit rootfs; };
+          }) {
+            inherit (majordomo.packages.${system}) apacheHttpd;
+            inherit rootfs;
+          };
         container-latest = import ./default.nix {
           inherit rootfs;
           nixpkgs = majordomo.outputs.nixpkgs;
