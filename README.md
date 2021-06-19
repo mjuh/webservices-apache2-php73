@@ -61,7 +61,7 @@ before running the command you need to provide all variables:
 
 * `$SITES_CONF_PATH` should point to a directory with Apache's configuration files for vhosts.
 * `$SECURITY_LEVEL` should be one of: `default`, `unsafe`, `hardened`, `hardened-nochmod`.
-* `$SOCKET_HTTP_PORT` any free port on your computer, e.g. `8073`.
+* `$SOCKET_HTTP_PORT` any free port on your computer, e.g. `8080`.
 
 ## Contributing to Apache PHP 7.3
 
