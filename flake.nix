@@ -5,7 +5,7 @@
     deploy-rs.url = "github:serokell/deploy-rs";
     flake-compat = { url = "github:edolstra/flake-compat"; flake = false; };
     flake-utils.url = "github:numtide/flake-utils";
-    majordomo.url = "git+file:///home/oleg/majordomo/_ci/nixpkgs";
+    majordomo.url = "git+ssh://git@gitlab.intr/_ci/nixpkgs?ref=ispconfig";
   };
 
   outputs = { self, flake-utils, nixpkgs, majordomo, deploy-rs, ... } @ inputs:
