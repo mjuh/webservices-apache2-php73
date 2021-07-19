@@ -93,11 +93,11 @@
         "nixpkgs-unstable": "nixpkgs-unstable"
       },
       "locked": {
-        "lastModified": 1624542048,
-        "narHash": "sha256-cnrwrzep3bg8ihJGgaRbHVXa8JQL4iQ+lDNTe7sBpz4=",
+        "lastModified": 1626698567,
+        "narHash": "sha256-Zk2vNXLHE4LLPm0XiDUxFkrrmtqiNJi9wfg5SDn1k3A=",
         "ref": "ispconfig",
-        "rev": "83e1ba5c59173c804edb7f840a93d646b72457c1",
-        "revCount": 886,
+        "rev": "950fbf5482535683e6c3a4c4bb690dd29bb48dd6",
+        "revCount": 894,
         "type": "git",
         "url": "ssh://git@gitlab.intr/_ci/nixpkgs"
       },
