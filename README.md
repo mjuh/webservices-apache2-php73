@@ -79,4 +79,4 @@ If you want to contact me you can reach us at <support@majordomo.ru>.
 
 ## License
 
-This project uses the following license: [GPL3+](https://www.gnu.org/licenses/gpl-3.0.en.html).
+This project uses the following license: [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0).
