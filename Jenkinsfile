@@ -1,1 +1,1 @@
-deployRS(deploy: true, scanPasswords: true)
+deployRS(deploy: true, scanPasswords: true, checkPhase: { return true })
