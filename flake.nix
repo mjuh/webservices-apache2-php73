@@ -62,12 +62,12 @@
                     })
                     ((with self.packages.${system}.container-latest; ''
                       #!${runtimeShell} -e
-                      echo ${docker}/bin/docker load --input ${out}
-                      echo ${docker}/bin/docker push ${imageName}:${imageTag}
+                      ${docker}/bin/docker load --input ${out}
+                      ${docker}/bin/docker push ${imageName}:${imageTag}
                     '')
                     + (with self.packages.${system}.container-master; ''
-                      echo ${docker}/bin/docker load --input ${out}
-                      echo ${docker}/bin/docker push ${imageName}:${imageTag}
+                      ${docker}/bin/docker load --input ${out}
+                      ${docker}/bin/docker push ${imageName}:${imageTag}
                     ''));
                 };
                 apache2-php73-debug = node // {
@@ -78,8 +78,8 @@
                     })
                     (with self.packages.${system}.container-debug; ''
                       #!${runtimeShell} -e
-                      echo ${docker}/bin/docker load --input ${out}
-                      echo ${docker}/bin/docker push ${imageName}:${imageTag}
+                      ${docker}/bin/docker load --input ${out}
+                      ${docker}/bin/docker push ${imageName}:${imageTag}
                     '');
                 };
               };
