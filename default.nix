@@ -17,7 +17,8 @@ let
     name = "apache2-rootfs-php73";
     src = ./rootfs;
     inherit zlib curl coreutils findutils apacheHttpdmpmITK apacheHttpd
-      mjHttpErrorPages s6 execline php73 logger;
+      s6 execline php73 logger;
+    mjHttpErrorPages = mj-http-error-pages;
     # TODO: Fix "error: undefined variable 'xdebug'" in apps/moodle
     postfix = sendmail;
     mjperl5Packages = mjperl5lib;
@@ -28,7 +29,8 @@ let
     libstdcxx = gcc-unwrapped.lib;
   };
 
-in pkgs.dockerTools.buildLayeredImage rec {
+in
+pkgs.dockerTools.buildLayeredImage rec {
   inherit tag;
   name = "docker-registry.intr/webservices/apache2-php73";
   contents = [
@@ -57,7 +59,7 @@ in pkgs.dockerTools.buildLayeredImage rec {
     ghostscript
     nodePackages.svgo
   ] ++ collect isDerivation mjperl5Packages
-    ++ collect isDerivation php73Packages;
+  ++ collect isDerivation php73Packages;
 
   # TODO: Fix "error: undefined variable 'xdebug'" in apps/moodle
   # ++ optional (tag == "debug") xdebug;
