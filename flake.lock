@@ -84,6 +84,21 @@
         "type": "github"
       }
     },
+    "flake-utils_2": {
+      "locked": {
+        "lastModified": 1649676176,
+        "narHash": "sha256-OWKJratjt2RW151VUlJPRALb7OU2S5s+f0vLj4o1bHM=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "a4b154ebbdc88c8498a5c7b01589addc9e9cb678",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
     "majordomo": {
       "inputs": {
         "flake-compat": "flake-compat_3",
@@ -91,14 +106,15 @@
         "nixpkgs-deprecated": "nixpkgs-deprecated",
         "nixpkgs-php81": "nixpkgs-php81",
         "nixpkgs-stable": "nixpkgs-stable",
-        "nixpkgs-unstable": "nixpkgs-unstable"
+        "nixpkgs-unstable": "nixpkgs-unstable",
+        "shared-http-errors": "shared-http-errors"
       },
       "locked": {
-        "lastModified": 1650374319,
-        "narHash": "sha256-WgaEoLq/e81BGt2/XsfvRxWE+tM7n/zK/BGgNtwQDk8=",
+        "lastModified": 1650417581,
+        "narHash": "sha256-+78Zmtd0WZht180MoNsJTXc+zsXpetinEVRF5ba/DPc=",
         "ref": "master",
-        "rev": "9653c63938af69cd75df53a18973cb3fcf853a93",
-        "revCount": 933,
+        "rev": "2104ac20f89e67c6cea2fec44f520670bc5eba36",
+        "revCount": 934,
         "type": "git",
         "url": "https://gitlab.intr/_ci/nixpkgs"
       },
@@ -244,6 +260,28 @@
         "flake-utils": "flake-utils",
         "majordomo": "majordomo",
         "nixpkgs": "nixpkgs_3"
+      }
+    },
+    "shared-http-errors": {
+      "inputs": {
+        "flake-utils": "flake-utils_2",
+        "nixpkgs": [
+          "majordomo",
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1650417385,
+        "narHash": "sha256-5bjOybohmVic3or6heD75NTlJ+PkXxZKxrz0UcaDpno=",
+        "ref": "master",
+        "rev": "3e353d0400138563e62dfca946b013706277a843",
+        "revCount": 15,
+        "type": "git",
+        "url": "https://gitlab.intr/shared/http_errors.git"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://gitlab.intr/shared/http_errors.git"
       }
     },
     "utils": {
